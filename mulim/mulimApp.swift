@@ -11,7 +11,9 @@ import SwiftUI
 struct mulimApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+           // ContentView()
+            Onbording()
+                .environment(\.font, Font.custom("Tajawal-Regular", size: 16))
         }
     }
 }
