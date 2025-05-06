@@ -9,11 +9,16 @@ import SwiftUI
 
 @main
 struct mulimApp: App {
+    @AppStorage("hasSeenOnboarding") var hasSeenOnboarding: Bool = false
     var body: some Scene {
         WindowGroup {
-           // ContentView()
-            Onbording()
-                .environment(\.font, Font.custom("Tajawal-Regular", size: 16))
-        }
+            if hasSeenOnboarding {
+                          MainTabView()
+                              .environment(\.font, Font.custom("Tajawal-Regular", size: 16))
+                      } else {
+                          Onbording()
+                              .environment(\.font, Font.custom("Tajawal-Regular", size: 16))
+                      }
+            }
     }
 }
