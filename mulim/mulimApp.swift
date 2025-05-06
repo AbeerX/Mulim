@@ -6,10 +6,15 @@
 //
 
 import SwiftUI
-
+import SwiftData
 @main
 struct mulimApp: App {
-    @AppStorage("hasSeenOnboarding") var hasSeenOnboarding: Bool = false
+    var body: some Scene {
+         WindowGroup {
+             Products1stView().modelContainer(for: Product.self)
+         }
+     }
+  /*  @AppStorage("hasSeenOnboarding") var hasSeenOnboarding: Bool = false
     var body: some Scene {
         WindowGroup {
             if hasSeenOnboarding {
@@ -20,5 +25,5 @@ struct mulimApp: App {
                               .environment(\.font, Font.custom("Tajawal-Regular", size: 16))
                       }
             }
-    }
+    }*/
 }
