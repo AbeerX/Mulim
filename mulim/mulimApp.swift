@@ -10,19 +10,19 @@ import SwiftData
 @main
 struct mulimApp: App {
     @State private var hasCompletedFirstSetup = false // ✅ هنا
-
+    
     var body: some Scene {
-
+        
         WindowGroup {
-                    if hasCompletedFirstSetup {
-                        MainTabView()
-                    } else {
-                        Products1stView(hasCompletedFirstSetup: $hasCompletedFirstSetup)
-                    }
-                }
-         .modelContainer(for: Product.self) // ✅ مكانه الصحيح هنا
-
-     }
+            if hasCompletedFirstSetup {
+                MainTabView()
+            } else {
+                Products1stView(hasCompletedFirstSetup: $hasCompletedFirstSetup)
+            }
+        }
+        .modelContainer(for: Product.self) // ✅ مكانه الصحيح هنا
+        
+    }}
 
   /*  @AppStorage("hasSeenOnboarding") var hasSeenOnboarding: Bool = false
     var body: some Scene {
@@ -37,3 +37,4 @@ struct mulimApp: App {
         }
     }
 }
+*/

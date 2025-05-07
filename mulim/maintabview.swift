@@ -5,41 +5,76 @@
 //  Created by Alanoud Alamrani on 08/11/1446 AH.
 //
 //
+//import SwiftUI
+//
+//
+//struct MainTabView: View {
+//    var body: some View {
+//        TabView {
+//            Text("Orders Screen Placeholder") // مؤقتًا
+//            
+//            NavigationStack {
+//                TabView {
+//                    NavigationStack {
+//                        Main()
+//                    }
+//                    Main()
+//
+//                        .tabItem {
+//                            Image(systemName: "house.fill")
+//                            Text("Main")
+//                            
+//                            
+//                        }
+//                    Text("Orders Screen Placeholder") // مؤقتًا
+//                    
+//                        .tabItem {
+//                            Image(systemName: "cart.fill.badge.plus")
+//                            Text("Orders")
+//                        }
+//                    
+//                    products()
+//                        .tabItem {
+//                            Image(systemName: "book.pages.fill")
+//                            Text("Products")
+//                        }
+//                }
+//                .accentColor(Color("C1"))
+//            }
+//        }
+//    }}
 import SwiftUI
-
 
 struct MainTabView: View {
     var body: some View {
         TabView {
-            Text("Orders Screen Placeholder") // مؤقتًا
-            
+            // الصفحة الرئيسية
             NavigationStack {
-                TabView {
-                    NavigationStack {
-                        Main()
-                    }
-                    Main()
+                Main()
+            }
+            .tabItem {
+                Image(systemName: "house.fill")
+                Text("Main")
+            }
 
-                        .tabItem {
-                            Image(systemName: "house.fill")
-                            Text("Main")
-                            
-                            
-                        }
-                    Text("Orders Screen Placeholder") // مؤقتًا
-                    
-                        .tabItem {
-                            Image(systemName: "cart.fill.badge.plus")
-                            Text("Orders")
-                        }
-                    
-                    products()
-                        .tabItem {
-                            Image(systemName: "book.pages.fill")
-                            Text("Products")
-                        }
-                }
-                .accentColor(Color("C1"))
+            // الطلبات
+            NavigationStack {
+                Text("Orders Screen Placeholder")
+            }
+            .tabItem {
+                Image(systemName: "cart.fill.badge.plus")
+                Text("Orders")
+            }
+
+            // المنتجات
+            NavigationStack {
+                products()
+            }
+            .tabItem {
+                Image(systemName: "book.pages.fill")
+                Text("Products")
             }
         }
-    }}
+        .accentColor(Color("C1")) // ← يغير لون الأيقونة المختارة
+    }
+}
