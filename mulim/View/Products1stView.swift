@@ -19,12 +19,12 @@ struct Products1stView: View {
     var body: some View {
         NavigationStack {
             ScrollView{
-            VStack {
-                
+                VStack(spacing: 0) {
+
                 
                 if products.isEmpty{
                     Spacer()
-                    Text("Enter your products with prices to make it easier to manage your products and track your income.").font(.system(size: 14)).foregroundColor(Color.gray).multilineTextAlignment(.center).lineLimit(nil).frame(height: 45.0).padding(.bottom,500)
+                    Text("Enter your products with prices to make it easier to manage your products and track your income.").font(.system(size: 14)).foregroundColor(Color.gray).multilineTextAlignment(.center).lineLimit(nil).frame(height: 45.0).padding().padding(.top,200)
                     
                 }
                 else{
@@ -59,6 +59,8 @@ struct Products1stView: View {
                         }
                     }
                     .padding()
+                    .padding(.top, -50) // ✅ هذا يقلل المسافة
+
                 }
             }
             //.padding(.bottom, 150.0)

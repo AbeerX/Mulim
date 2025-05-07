@@ -148,13 +148,16 @@ struct products: View {
                     } label: {
                         Image(systemName: "plus.circle")
                             .resizable()
+                            .scaledToFit()
                             .frame(width: 32, height: 32)
+                            .foregroundColor(Color("C1"))
                     }
                 }
 
                 ToolbarItem(placement: .principal) {
                     Text("Products")
-                        .font(.custom("SFPro", size: 22))
+                        .font(.system(size: 18))
+
                 }
             }
 
