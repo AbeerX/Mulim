@@ -44,7 +44,7 @@ struct Onbording: View {
                                            
                                            Button(action: {
                                                hasSeenOnboarding = true
-                                               goToProducts = true
+                                              
                                            }) {
                                                Text("Get Started")
                                                    .foregroundColor(.black)

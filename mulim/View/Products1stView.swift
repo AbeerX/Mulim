@@ -89,7 +89,10 @@ struct Products1stView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if products.isEmpty{
                         Button(action: {
-                            onFinish()
+                            //onFinish()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                onFinish()
+                            }
                         }){
                             Text("Skip")
                                 .font(.system(size: 18))
@@ -99,7 +102,10 @@ struct Products1stView: View {
                     }
                     else{
                         Button(action: {
-                            onFinish()
+                            //onFinish()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                onFinish()
+                            }
                         }){
                             Text("Next")
                                 .font(.system(size: 18))

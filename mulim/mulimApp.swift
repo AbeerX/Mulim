@@ -13,25 +13,22 @@ struct mulimApp: App {
     @AppStorage("hasSeenOnboarding") var hasSeenOnboarding: Bool = false
     @AppStorage("hasCompletedFirstSetup") var hasCompletedFirstSetup: Bool = false
 
-
     var body: some Scene {
         WindowGroup {
             if !hasSeenOnboarding {
                 Onbording()
-                    .environment(\.font, Font.custom("Tajawal-Regular", size: 16))
             } else if !hasCompletedFirstSetup {
                 Products1stView {
                     hasCompletedFirstSetup = true
                 }
-                    .environment(\.font, Font.custom("Tajawal-Regular", size: 16))
             } else {
                 MainTabView()
-                    .environment(\.font, Font.custom("Tajawal-Regular", size: 16))
             }
         }
         .modelContainer(for: Product.self)
     }
 }
+
 
 //@main
 //struct mulimApp: App {
