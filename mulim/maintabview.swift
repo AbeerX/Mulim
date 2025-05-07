@@ -12,11 +12,13 @@ struct MainTabView: View {
         NavigationStack {
             TabView {
                 NavigationStack {
-                   
+                    Main()
                 }
                 .tabItem {
                     Image(systemName: "house.fill")
                     Text("Main")
+                    
+                   
                 }
                 
                 NavigationStack {
@@ -33,7 +35,7 @@ struct MainTabView: View {
                   
                 }
                 .tabItem {
-                    Image(systemName: "person.fill")
+                    Image(systemName: "book.pages.fill")
                     Text("Products")
                 }
             }

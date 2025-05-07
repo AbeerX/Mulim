@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct Onbording: View {
+    @AppStorage("hasSeenOnboarding") var hasSeenOnboarding: Bool = false
     var body: some View {
-        @AppStorage("hasSeenOnboarding") var hasSeenOnboarding: Bool = false
 
         NavigationStack {
             
@@ -46,7 +46,7 @@ struct Onbording: View {
                         NavigationLink(destination: Main()) {
                             
                             Text("Get Started")
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                                 .font(.system(size: 18, weight: .bold))
                                 .padding()
                                 .frame(width: 362, height: 52)
