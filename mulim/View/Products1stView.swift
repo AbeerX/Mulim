@@ -3,7 +3,6 @@
 //  mulim
 //
 //  Created by Noura Alrowais on 08/11/1446 AH.
-//
 
 import SwiftUI
 import Foundation
@@ -114,6 +113,8 @@ struct Products1stView: View {
 }
 
 struct productSheet: View {
+    var productToEdit: Product? = nil
+
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     @State private var name: String = ""
@@ -125,13 +126,22 @@ struct productSheet: View {
         VStack{
             HStack{
                 
-                Button("Done"){
-                    if let priceValue = Double(price){
-                        let newProduct = Product(productName: name, productPrice: priceValue, productImage: selectedImageData)
-                        modelContext.insert(newProduct)
+       Button("Done") {
+                    if let priceValue = Double(price) {
+                        if let productToEdit = productToEdit {
+                            // تعديل
+                            productToEdit.productName = name
+                            productToEdit.productPrice = priceValue
+                            productToEdit.productImage = selectedImageData
+                        } else {
+                            // إضافة جديدة
+                            let newProduct = Product(productName: name, productPrice: priceValue, productImage: selectedImageData)
+                            modelContext.insert(newProduct)
+                        }
                         dismiss()
                     }
-                } .foregroundColor(.blue)
+                }
+                .foregroundColor(.blue)
                 Spacer()
                 Text("Add New Product").font(.system(size: 16))
               Spacer()
@@ -140,7 +150,8 @@ struct productSheet: View {
                 }
                 .foregroundColor(.gray)
                 
-            }.padding()
+            }
+            .padding()
             PhotosPicker(selection: $selectedItem, matching: .images) {
                 if let data = selectedImageData, let uiImage = UIImage(data: data) {
                     Image(uiImage: uiImage)
@@ -176,7 +187,8 @@ struct productSheet: View {
             HStack{
                 Text("Product Name:")
                 TextField("Enter Product Name", text: $name)
-            }.padding()
+            }
+            .padding()
             Divider()
             HStack{
                 Text("Product Price:")
@@ -185,6 +197,14 @@ struct productSheet: View {
             }.padding()
             
         }
+        .onAppear {
+            if let product = productToEdit {
+                name = product.productName
+                price = String(product.productPrice)
+                selectedImageData = product.productImage
+            }
+        }
+
         Spacer()
     }
 }

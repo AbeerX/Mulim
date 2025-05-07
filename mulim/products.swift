@@ -157,9 +157,10 @@ struct products: View {
                         .font(.custom("SFPro", size: 22))
                 }
             }
+
             .sheet(isPresented: $showAddSheet) {
                 NavigationStack {
-                    productSheet()
+                    productSheet(productToEdit: editProduct)
                 }
                 .presentationDetents([.medium])
             }
