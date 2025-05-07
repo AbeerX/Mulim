@@ -9,16 +9,17 @@ import SwiftUI
 import SwiftData
 @main
 struct mulimApp: App {
-    @State private var hasCompletedFirstSetup = false // ✅ هنا
-    
+    @AppStorage("hasCompletedFirstSetup") private var hasCompletedFirstSetup = false
     var body: some Scene {
         
         WindowGroup {
             if hasCompletedFirstSetup {
                 MainTabView()
             } else {
-                Products1stView(hasCompletedFirstSetup: $hasCompletedFirstSetup)
-            }
+                Products1stView(onFinish: {
+                                 hasCompletedFirstSetup = true
+                             })
+                         }
         }
         .modelContainer(for: Product.self) // ✅ مكانه الصحيح هنا
         

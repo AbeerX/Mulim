@@ -10,13 +10,12 @@ import Foundation
 import SwiftData
 import PhotosUI
 struct Products1stView: View {
-    @Binding var hasCompletedFirstSetup: Bool
-
+    var onFinish: () -> Void
     @State private var showSheet = false
     @Query var products: [Product]
     let columns = [
-        GridItem(.flexible(), spacing: 16),
-        GridItem(.flexible(), spacing: 16)
+        GridItem(.flexible(), spacing: 8),
+        GridItem(.flexible(), spacing: 8)
     ]
     var body: some View {
         NavigationStack {
@@ -31,20 +30,20 @@ struct Products1stView: View {
                 }
                 else{
                     
-                    LazyVGrid(columns: columns, spacing: 16) {
+                    LazyVGrid(columns: columns, spacing: 8) {
                         ForEach(products) { product in
                             VStack {
                                 if let data = product.productImage, let uiImage = UIImage(data: data) {
                                     Image(uiImage: uiImage)
                                         .resizable()
                                         .scaledToFill()
-                                        .frame(width: 105, height: 77)
+                                        .frame(width: 150, height: 100)
                                         .clipShape(RoundedRectangle(cornerRadius: 21))
                                         .clipped()
                                 } else {
                                     Rectangle()
                                         .fill(Color.gray.opacity(0.2))
-                                        .frame(width: 105, height: 77)
+                                        .frame(width: 150, height: 100)
                                         .clipShape(RoundedRectangle(cornerRadius: 21))
                                         .overlay(Image(systemName: "photo").foregroundColor(.gray))
                                 }
@@ -87,12 +86,26 @@ struct Products1stView: View {
                         .font(.system(size: 18))
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Next") {
-                           hasCompletedFirstSetup = true // ⬅️ هذا اللي يغير الشاشة
-                       }
-                    .font(.system(size: 18))
-                        .fontWeight(.bold)
-                        .foregroundColor(Color("C1"))
+                    if products.isEmpty{
+                        Button(action: {
+                            onFinish()
+                        }){
+                            Text("Skip")
+                                .font(.system(size: 18))
+                                .fontWeight(.bold)
+                                .foregroundColor(Color("C1"))
+                        }
+                    }
+                    else{
+                        Button(action: {
+                            onFinish()
+                        }){
+                            Text("Next")
+                                .font(.system(size: 18))
+                                .fontWeight(.bold)
+                                .foregroundColor(Color("C1"))
+                        }
+                    }
                 }
             }
         }
@@ -175,6 +188,6 @@ struct productSheet: View {
         Spacer()
     }
 }
-//#Preview {
-//  Products1stView()
-//}
+#Preview {
+    Products1stView(onFinish: {})
+}
