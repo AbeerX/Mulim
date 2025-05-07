@@ -25,7 +25,8 @@ struct mulimApp: App {
                 MainTabView()
             }
         }
-        .modelContainer(for: Product.self)
+        .modelContainer(for: [Product.self, Order.self])
+
     }
 }
 

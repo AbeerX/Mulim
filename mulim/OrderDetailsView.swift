@@ -1,87 +1,109 @@
 import SwiftUI
+import SwiftData
 
 struct OrderDetailsView: View {
+    @Bindable var order: Order
+    @Environment(\.dismiss) private var dismiss
+
     @State private var isEditing = false
 
-    @State private var productType = "Strawberry Cake"
-    @State private var clientName = "Reem Al-Ghafis"
-    @State private var customerNumber = "0502698873"
-    @State private var deliveryDate = Date() // ✅ استخدم Date بدل String
-    @State private var selectedStatus = "Canceled"
-
     var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                groupedBox {
-                    fieldRow(title: "Product Type:", text: $productType)
-                }
-
-                groupedBox {
-                    fieldRow(title: "Client name:", text: $clientName)
-                    Divider().padding(.horizontal, 10)
-                    fieldRow(title: "Customer number:", text: $customerNumber)
-                }
-
-                groupedBox {
-                    deliveryDateRow(title: "Delivery time:", date: $deliveryDate)
-                    Divider().padding(.horizontal, 10)
-
-                    HStack(alignment: .center, spacing: 10) {
-                        Text("Order status:")
-                            .font(.system(size: 18, weight: .regular))
-                            .foregroundColor(.black)
-
-                        statusButton(title: "Canceled", color: Color(hex: "#FFC835"))
-                        statusButton(title: "open", color: Color(hex: "#00BCD4"))
-                        statusButton(title: "Closed", color: Color(hex: "#FF5722"))
-                    }
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 12)
-                }
-
-                Spacer()
-            }
-            .padding(.horizontal, 20)
-            .padding(.top, 24)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("Order details")
-                        .font(.system(size: 18, weight: .regular))
-                        .foregroundColor(.black)
-                }
-
-                ToolbarItem(placement: .navigationBarLeading) {
+        NavigationStack {
+            VStack(spacing: 0) {
+                // Title and top buttons aligned horizontally
+                HStack {
                     if isEditing {
                         Button("Cancel") {
                             isEditing = false
                         }
-                        .foregroundColor(Color(hex: "#999999"))
-                        .font(.system(size: 18, weight: .regular))
+                        .foregroundColor(.gray)
+                    } else {
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "chevron.backward")
+                                Text("Back")
+                            }
+                        }
+                        .foregroundColor(.blue)
                     }
-                }
 
-                ToolbarItem(placement: .navigationBarTrailing) {
+                    Spacer()
+
+                    Text("Order details")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundColor(.black)
+
+                    Spacer()
+
                     Button(action: {
-                        isEditing.toggle()
+                        if isEditing {
+                            isEditing = false
+                            dismiss() // ✅ يرجع مباشرة إلى OrdersView
+                        } else {
+                            isEditing = true
+                        }
                     }) {
                         if isEditing {
                             Text("Done")
-                                .font(.system(size: 18, weight: .regular))
                                 .foregroundColor(.blue)
                         } else {
                             Image(systemName: "square.and.pencil")
                                 .resizable()
-                                .frame(width: 24, height: 24)
+                                .frame(width: 20, height: 20)
                                 .foregroundColor(.black)
                         }
                     }
                 }
+                .padding(.horizontal, 20)
+                .padding(.top, 8)
+                .padding(.bottom, 16)
+
+                ScrollView {
+                    VStack(spacing: 20) {
+                        groupedBox {
+                            fieldRow(title: "Product Type:", text: $order.productType)
+                        }
+
+                        groupedBox {
+                            fieldRow(title: "Client name:", text: $order.clientName)
+                            Divider().padding(.horizontal, 10)
+                            fieldRow(title: "Customer number:", text: $order.customerNumber)
+                        }
+
+                        groupedBox {
+                            deliveryDateRow(title: "Delivery time:", date: $order.deliveryDate)
+                            Divider().padding(.horizontal, 10)
+
+                            HStack(alignment: .center, spacing: 10) {
+                                Text("Order status:")
+                                    .font(.system(size: 18))
+                                    .foregroundColor(.black)
+
+                                statusButton(title: "Canceled", color: Color(hex: "#FFC835"))
+                                statusButton(title: "Open", color: Color(hex: "#00BCD4"))
+                                statusButton(title: "Closed", color: Color(hex: "#FF5722"))
+                            }
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 12)
+                        }
+
+                        groupedBox {
+                            noteRow(title: "Note:", text: $order.note)
+                        }
+
+                        Spacer()
+                    }
+                    .padding(.top, 12)
+                }
             }
+            .navigationBarBackButtonHidden(true)
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 
-    // MARK: - Grouped Box
     private func groupedBox<Content: View>(@ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             content()
@@ -91,22 +113,22 @@ struct OrderDetailsView: View {
             RoundedRectangle(cornerRadius: 10)
                 .stroke(Color(hex: "#00BCD4"), lineWidth: 1)
         )
+        .padding(.horizontal, 20)
     }
 
-    // MARK: - Field Row
     private func fieldRow(title: String, text: Binding<String>) -> some View {
         HStack {
             Text(title)
-                .font(.system(size: 18, weight: .regular))
+                .font(.system(size: 18))
                 .foregroundColor(.black)
 
             if isEditing {
                 TextField("", text: text)
-                    .font(.system(size: 18, weight: .regular))
+                    .font(.system(size: 18))
                     .foregroundColor(.gray)
             } else {
                 Text(text.wrappedValue)
-                    .font(.system(size: 18, weight: .regular))
+                    .font(.system(size: 18))
                     .foregroundColor(.gray)
             }
 
@@ -116,11 +138,10 @@ struct OrderDetailsView: View {
         .padding(.vertical, 12)
     }
 
-    // ✅ MARK: - Date Row
     private func deliveryDateRow(title: String, date: Binding<Date>) -> some View {
         HStack {
             Text(title)
-                .font(.system(size: 18, weight: .regular))
+                .font(.system(size: 18))
                 .foregroundColor(.black)
 
             if isEditing {
@@ -129,7 +150,7 @@ struct OrderDetailsView: View {
                     .datePickerStyle(.compact)
             } else {
                 Text(date.wrappedValue.formatted(date: .numeric, time: .omitted))
-                    .font(.system(size: 18, weight: .regular))
+                    .font(.system(size: 18))
                     .foregroundColor(.gray)
             }
 
@@ -139,16 +160,41 @@ struct OrderDetailsView: View {
         .padding(.vertical, 12)
     }
 
-    // MARK: - Status Button
+    private func noteRow(title: String, text: Binding<String>) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.system(size: 18))
+                .foregroundColor(.black)
+
+            if isEditing {
+                TextEditor(text: text)
+                    .font(.system(size: 16))
+                    .foregroundColor(.gray)
+                    .frame(height: 100)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color(hex: "#00BCD4"), lineWidth: 1)
+                    )
+            } else {
+                Text(text.wrappedValue.isEmpty ? "No note" : text.wrappedValue)
+                    .font(.system(size: 16))
+                    .foregroundColor(.gray)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 12)
+    }
+
     private func statusButton(title: String, color: Color) -> some View {
         Text(title)
-            .font(.system(size: 12, weight: .regular))
+            .font(.system(size: 12))
             .foregroundColor(.black)
             .padding(.horizontal, 13)
             .padding(.vertical, 6)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(selectedStatus == title ? color.opacity(0.4) : Color.clear)
+                    .fill(order.selectedStatus == title ? color.opacity(0.4) : Color.clear)
                     .overlay(
                         RoundedRectangle(cornerRadius: 20)
                             .stroke(color, lineWidth: 1.5)
@@ -156,7 +202,7 @@ struct OrderDetailsView: View {
             )
             .onTapGesture {
                 if isEditing {
-                    selectedStatus = title
+                    order.selectedStatus = title
                 }
             }
     }
@@ -177,5 +223,13 @@ extension Color {
 }
 
 #Preview {
-    OrderDetailsView()
+    let sampleOrder = Order(
+        productType: "Test Cake",
+        clientName: "Test Client",
+        customerNumber: "0500000000",
+        deliveryDate: .now,
+        selectedStatus: "Open",
+        note: "Extra note here"
+    )
+    return OrderDetailsView(order: sampleOrder)
 }

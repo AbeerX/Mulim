@@ -57,9 +57,9 @@ struct MainTabView: View {
                 Text("Main")
             }
 
-            // الطلبات
+            // الطلبات ← ربط مباشر بـ OrdersView
             NavigationStack {
-                Text("Orders Screen Placeholder")
+                OrdersView() // ✅ الربط الصحيح هنا
             }
             .tabItem {
                 Image(systemName: "cart.fill.badge.plus")
