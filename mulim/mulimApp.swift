@@ -28,12 +28,12 @@ struct mulimApp: App {
     var body: some Scene {
         WindowGroup {
             if hasSeenOnboarding {
-                          MainTabView()
-                              .environment(\.font, Font.custom("Tajawal-Regular", size: 16))
-                      } else {
-                          Onbording()
-                              .environment(\.font, Font.custom("Tajawal-Regular", size: 16))
-                      }
+                MainTabView()
+                    .environment(\.font, Font.custom("Tajawal-Regular", size: 16))
+            } else {
+                Onbording()
+                    .environment(\.font, Font.custom("Tajawal-Regular", size: 16))
             }
-    }*/
+        }
+    }
 }

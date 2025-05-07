@@ -43,7 +43,7 @@ struct Onbording: View {
               Browse past and upcoming orders, and organize your schedule accurately and on time.
               """)
                         
-                        NavigationLink(destination: Main()) {
+                        NavigationLink(destination: Products1stView()) {
                             
                             Text("Get Started")
                                 .foregroundColor(.black)
