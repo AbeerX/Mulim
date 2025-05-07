@@ -10,6 +10,8 @@ import Foundation
 import SwiftData
 import PhotosUI
 struct Products1stView: View {
+    @Binding var hasCompletedFirstSetup: Bool
+
     @State private var showSheet = false
     @Query var products: [Product]
     let columns = [
@@ -85,8 +87,10 @@ struct Products1stView: View {
                         .font(.system(size: 18))
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Text("Next")
-                        .font(.system(size: 18))
+                    Button("Next") {
+                           hasCompletedFirstSetup = true // ⬅️ هذا اللي يغير الشاشة
+                       }
+                    .font(.system(size: 18))
                         .fontWeight(.bold)
                         .foregroundColor(Color("C1"))
                 }
@@ -171,6 +175,6 @@ struct productSheet: View {
         Spacer()
     }
 }
-#Preview {
-  Products1stView()
-}
+//#Preview {
+//  Products1stView()
+//}

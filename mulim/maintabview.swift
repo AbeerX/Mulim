@@ -4,43 +4,32 @@
 //
 //  Created by Alanoud Alamrani on 08/11/1446 AH.
 //
-
+//
 import SwiftUI
+
 
 struct MainTabView: View {
     var body: some View {
-        NavigationStack {
-            TabView {
-                NavigationStack {
-                   
-                }
+        TabView {
+            Text("Orders Screen Placeholder") // مؤقتًا
+
                 .tabItem {
                     Image(systemName: "house.fill")
                     Text("Main")
                 }
-                
-                NavigationStack {
-               
-                }
+            Text("Orders Screen Placeholder") // مؤقتًا
+
                 .tabItem {
                     Image(systemName: "cart.fill.badge.plus")
-                        .resizable()
-                        .frame(width: 22, height: 22)
                     Text("Orders")
                 }
-                
-                NavigationStack {
-                  
-                }
+
+            products()
                 .tabItem {
                     Image(systemName: "person.fill")
                     Text("Products")
                 }
-            }
-            .accentColor(Color("C1"))
-            .navigationBarBackButtonHidden(true)
         }
+        .accentColor(Color("C1"))
     }
 }
-
-
