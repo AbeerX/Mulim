@@ -10,7 +10,7 @@
 "next_button" = "التالي";
 "add_new_product" = "اضافه منتج جديد";
 "done_button" = "تم";
-"cancel_button" = "الغاء";
+"cancel_button" = "إلغاء";
 "upload_photo" = "تحميل صورة";
 "enter_name" = "قم بإدخال اسم المنتج";
 "enter_price" = "قم بإدخال سعر المنتج";
@@ -18,3 +18,40 @@
 "product_price" = "سعر المنتج";
 "empty_list_text" = "قم بإدخال منتجاتك مع الأسعار
 لتسهيل عملية إدارة منتاجتك ومتابعة الدخل ";
+
+
+"Products" = "منتجات";
+"Add_New_Product" = "اضف منتج جديد";
+"Delete" = "حذف";
+"Edit" = "تعديل";
+"Orders" = "الطلبات";
+"Thereـareـnoـproductsـcurrentlyـavailable." = "لا يوجد منتجات متاحة حاليًا.";
+"Newـorder" = "طلب جديد ";
+"Totalـprice" = "السعر الإجمالي";
+"Customer_name:" = "اسم العميل:";
+"Customerـphoneـnumber:" = "رقم هاتف العميل";
+"prodect" = "منتج";
+"prodect:" = "المنتجات";
+"Note :" = "الملاحظات";
+"Delivery_time:" = "وقت التوصيل";
+"Canceled" = "ملغي";
+"open" = "مفتوح";
+"Closed" = "مغلق";
+"Order_status:" = "حالة الطلب";
+"Order_details" = "تفاصيل الطلب";
+"ProductـType:" = " نوع الطلب";
+"Previous_order" = "الطلبات السابقة";
+"Current_orders" = " الطلبات الحالية";
+"No_orders_yet" = "لا يوجد طلبات حاليًا.";
+"Month" = "الشهر";
+"Year" = " السنة";
+"Report" = "التقرير";
+"Total Revenue" = "إجمالي الإيرادات";
+"Revenue_Comparison_Over_Time" = "مقارنة الإيرادات بمرور الوقت";
+"Total_Orders" ="إجمالي الطلبات";
+"Total_Customers" = "إجمالي العملاء";
+"Best_Selling_Product" = "أفضل منتج";
+"Order_Growth" = " نمو الطلبات";
+"Revenue_Growth" = "نمو الإيرادات";
+"Main" = " الصفحة الرئيسية";
+"All" = "الكل";
