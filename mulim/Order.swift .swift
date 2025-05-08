@@ -9,9 +9,10 @@ class Order {
     var customerNumber: String
     var deliveryDate: Date
     var selectedStatus: String
-    var note: String // ✅ أضفنا الحقل الجديد
+    var note: String
+    var productPrice: Double // ✅ السعر محفوظ هنا
 
-    init(id: UUID = UUID(), productType: String, clientName: String, customerNumber: String, deliveryDate: Date, selectedStatus: String, note: String = "") {
+    init(id: UUID = UUID(), productType: String, clientName: String, customerNumber: String, deliveryDate: Date, selectedStatus: String, note: String = "", productPrice: Double = 0.0) {
         self.id = id
         self.productType = productType
         self.clientName = clientName
@@ -19,5 +20,10 @@ class Order {
         self.deliveryDate = deliveryDate
         self.selectedStatus = selectedStatus
         self.note = note
+        self.productPrice = productPrice
+    }
+
+    var totalPrice: Double {
+        return productPrice
     }
 }

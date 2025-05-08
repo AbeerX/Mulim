@@ -130,12 +130,14 @@ struct NewOrder: View {
             customerNumber: customerNumber,
             deliveryDate: deliveryDate,
             selectedStatus: "Open",
-            note: note
+            note: note,
+            productPrice: selectedProduct.productPrice // ✅ هنا يتم الحفظ
         )
 
         context.insert(newOrder)
         dismiss()
     }
+
 }
 
 // MARK: - Text Field With Dot

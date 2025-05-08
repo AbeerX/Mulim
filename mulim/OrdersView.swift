@@ -8,7 +8,7 @@ struct OrdersView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 16) {
-                // زر الإضافة والعنوان
+                // العنوان وزر الإضافة
                 HStack {
                     NavigationLink(destination: NewOrder()) {
                         ZStack {
@@ -32,7 +32,6 @@ struct OrdersView: View {
                 }
                 .padding(.horizontal)
 
-                // حقل البحث
                 TextField("Search", text: .constant(""))
                     .padding(10)
                     .frame(height: 40)
@@ -48,7 +47,6 @@ struct OrdersView: View {
                     )
                     .padding(.horizontal)
 
-                // فلاتر Current / Previous
                 HStack {
                     Button(action: {
                         selectedTab = "Current"
@@ -74,7 +72,6 @@ struct OrdersView: View {
                     .frame(height: 1)
                     .foregroundColor(Color.gray.opacity(0.3))
 
-                // ✅ الفلترة حسب الحالة
                 let filteredOrders = orders.filter { order in
                     if selectedTab == "Current" {
                         return order.selectedStatus == "Open"
@@ -127,6 +124,16 @@ struct OrdersView: View {
                                                 .font(.system(size: 12, weight: .bold))
                                                 .foregroundColor(Color(hex: "#393939"))
                                         }
+
+                                        HStack {
+                                            Image(systemName: "creditcard")
+                                                .font(.system(size: 14))
+                                                .foregroundColor(Color(hex: "#393939"))
+
+                                            Text("\(order.totalPrice, specifier: "%.2f") SR")
+                                                .font(.system(size: 12))
+                                                .foregroundColor(Color(hex: "#393939"))
+                                        }
                                     }
                                     .padding(.horizontal, 10)
                                     .padding(.vertical, 12)
@@ -147,7 +154,6 @@ struct OrdersView: View {
         }
     }
 
-    // شارة الحالة
     func statusBadge(for status: String) -> some View {
         let color: Color = switch status {
         case "Canceled": Color(hex: "#FFC835")
@@ -171,6 +177,7 @@ struct OrdersView: View {
             )
     }
 }
+
 
 #Preview {
     OrdersView()

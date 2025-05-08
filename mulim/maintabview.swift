@@ -44,29 +44,30 @@
 //        }
 //    }}
 import SwiftUI
+import SwiftData
 
 struct MainTabView: View {
+    @Query var orders: [Order]
+    @EnvironmentObject var orderManager: OrderManager
+
     var body: some View {
         TabView {
-            // الصفحة الرئيسية
             NavigationStack {
-                Main()
+                Main(orderManager: orderManager, orders: orders)
             }
             .tabItem {
                 Image(systemName: "house.fill")
                 Text("Main")
             }
 
-            // الطلبات ← ربط مباشر بـ OrdersView
             NavigationStack {
-                OrdersView() // ✅ الربط الصحيح هنا
+                OrdersView()
             }
             .tabItem {
                 Image(systemName: "cart.fill.badge.plus")
                 Text("Orders")
             }
 
-            // المنتجات
             NavigationStack {
                 products()
             }
@@ -75,6 +76,6 @@ struct MainTabView: View {
                 Text("Products")
             }
         }
-        .accentColor(Color("C1")) // ← يغير لون الأيقونة المختارة
+        .accentColor(Color("C1"))
     }
 }

@@ -10,7 +10,7 @@ struct OrderDetailsView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // Title and top buttons aligned horizontally
+                // العنوان وأزرار الرجوع والتعديل
                 HStack {
                     if isEditing {
                         Button("Cancel") {
@@ -40,7 +40,7 @@ struct OrderDetailsView: View {
                     Button(action: {
                         if isEditing {
                             isEditing = false
-                            dismiss() // ✅ يرجع مباشرة إلى OrdersView
+                            dismiss()
                         } else {
                             isEditing = true
                         }
@@ -64,6 +64,9 @@ struct OrderDetailsView: View {
                     VStack(spacing: 20) {
                         groupedBox {
                             fieldRow(title: "Product Type:", text: $order.productType)
+                            Divider().padding(.horizontal, 10)
+                            fieldRow(title: "Price:", text: .constant(String(format: "%.2f SR", order.totalPrice)))
+
                         }
 
                         groupedBox {
@@ -75,7 +78,6 @@ struct OrderDetailsView: View {
                         groupedBox {
                             deliveryDateRow(title: "Delivery time:", date: $order.deliveryDate)
                             Divider().padding(.horizontal, 10)
-
                             HStack(alignment: .center, spacing: 10) {
                                 Text("Order status:")
                                     .font(.system(size: 18))
@@ -104,6 +106,7 @@ struct OrderDetailsView: View {
         }
     }
 
+    // MARK: - Components
     private func groupedBox<Content: View>(@ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             content()
@@ -207,6 +210,7 @@ struct OrderDetailsView: View {
             }
     }
 }
+
 
 // MARK: - Hex Color Support
 extension Color {

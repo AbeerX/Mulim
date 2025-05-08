@@ -13,6 +13,8 @@ struct mulimApp: App {
     @AppStorage("hasSeenOnboarding") var hasSeenOnboarding: Bool = false
     @AppStorage("hasCompletedFirstSetup") var hasCompletedFirstSetup: Bool = false
 
+    @StateObject private var orderManager = OrderManager()
+
     var body: some Scene {
         WindowGroup {
             if !hasSeenOnboarding {
@@ -23,10 +25,10 @@ struct mulimApp: App {
                 }
             } else {
                 MainTabView()
+                    .environmentObject(orderManager)
             }
         }
         .modelContainer(for: [Product.self, Order.self])
-
     }
 }
 
