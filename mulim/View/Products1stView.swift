@@ -24,7 +24,7 @@ struct Products1stView: View {
                 
                 if products.isEmpty{
                     Spacer()
-                    Text("Enter your products with prices to make it easier to manage your products and track your income.").font(.system(size: 14)).foregroundColor(Color.gray).multilineTextAlignment(.center).lineLimit(nil).frame(height: 45.0).padding().padding(.top,200)
+                    Text("empty_list_text").font(.system(size: 14)).foregroundColor(Color.gray).multilineTextAlignment(.center).lineLimit(nil).frame(height: 45.0).padding().padding(.top,200)
                     
                 }
                 else{
@@ -59,7 +59,7 @@ struct Products1stView: View {
                         }
                     }
                     .padding()
-                    .padding(.top, -50) 
+                    .padding(.top, -50)
 
                 }
             }
@@ -83,7 +83,7 @@ struct Products1stView: View {
                     }
                 }
                 ToolbarItem(placement: .principal) {
-                    Text("Add Your Products")
+                    Text("add_product_title")
                         .font(.system(size: 18))
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -94,7 +94,7 @@ struct Products1stView: View {
                                 onFinish()
                             }
                         }){
-                            Text("Skip")
+                            Text("skip_button")
                                 .font(.system(size: 18))
                                 .fontWeight(.bold)
                                 .foregroundColor(Color("C1"))
@@ -107,7 +107,7 @@ struct Products1stView: View {
                                 onFinish()
                             }
                         }){
-                            Text("Next")
+                            Text("next_button")
                                 .font(.system(size: 18))
                                 .fontWeight(.bold)
                                 .foregroundColor(Color("C1"))
@@ -134,29 +134,30 @@ struct productSheet: View {
         VStack{
             HStack{
                 
-       Button("Done") {
-                    if let priceValue = Double(price) {
-                        if let productToEdit = productToEdit {
-                            // تعديل
-                            productToEdit.productName = name
-                            productToEdit.productPrice = priceValue
-                            productToEdit.productImage = selectedImageData
-                        } else {
-                            // إضافة جديدة
-                            let newProduct = Product(productName: name, productPrice: priceValue, productImage: selectedImageData)
-                            modelContext.insert(newProduct)
-                        }
-                        dismiss()
-                    }
-                }
-                .foregroundColor(.blue)
-                Spacer()
-                Text("Add New Product").font(.system(size: 16))
-              Spacer()
-                Button("Cancel"){
+                Button("cancel_button"){
                     dismiss()
                 }
                 .foregroundColor(.gray)
+                Spacer()
+                Text("add_new_product").font(.system(size: 16))
+              Spacer()
+                Button("done_button") {
+                             if let priceValue = Double(price) {
+                                 if let productToEdit = productToEdit {
+                                     // تعديل
+                                     productToEdit.productName = name
+                                     productToEdit.productPrice = priceValue
+                                     productToEdit.productImage = selectedImageData
+                                 } else {
+                                     // إضافة جديدة
+                                     let newProduct = Product(productName: name, productPrice: priceValue, productImage: selectedImageData)
+                                     modelContext.insert(newProduct)
+                                 }
+                                 dismiss()
+                             }
+                         }
+                         .foregroundColor(.blue)
+           
                 
             }
             .padding()
@@ -174,7 +175,7 @@ struct productSheet: View {
                             .scaledToFit()
                             .frame(width: 48, height: 48)
                             .foregroundColor(Color("C1"))
-                        Text("Upload Photo")
+                        Text("upload_photo")
                             .font(.system(size: 14))
                             .foregroundColor(Color.black)
                     }
@@ -193,14 +194,14 @@ struct productSheet: View {
             }
 
             HStack{
-                Text("Product Name:")
-                TextField("Enter Product Name", text: $name)
+                Text("product_name")
+                TextField("enter_name", text: $name)
             }
             .padding()
             Divider()
             HStack{
-                Text("Product Price:")
-                TextField("Enter Product Price", text: $price)
+                Text("product_price")
+                TextField("enter_price", text: $price)
                     .keyboardType(.decimalPad)
             }.padding()
             
@@ -218,4 +219,6 @@ struct productSheet: View {
 }
 #Preview {
     Products1stView(onFinish: {})
+        .environment(\.locale, .init(identifier: "ar"))
+   
 }
