@@ -6,6 +6,7 @@ struct OrderDetailsView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var isEditing = false
+    @State private var showContactPicker = false
 
     var body: some View {
         NavigationStack {
@@ -72,7 +73,7 @@ struct OrderDetailsView: View {
                         groupedBox {
                             fieldRow(title: "Client name:", text: $order.clientName)
                             Divider().padding(.horizontal, 10)
-                            fieldRow(title: "Customer number:", text: $order.customerNumber)
+                            phoneRow(title: "Customer number:", text: $order.customerNumber)
                         }
 
                         groupedBox {
@@ -103,6 +104,9 @@ struct OrderDetailsView: View {
             .navigationBarBackButtonHidden(true)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $showContactPicker) {
+                ContactPicker(selectedPhoneNumber: $order.customerNumber)
+            }
         }
     }
 
@@ -129,6 +133,35 @@ struct OrderDetailsView: View {
                 TextField("", text: text)
                     .font(.system(size: 18))
                     .foregroundColor(.gray)
+            } else {
+                Text(text.wrappedValue)
+                    .font(.system(size: 18))
+                    .foregroundColor(.gray)
+            }
+
+            Spacer()
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 12)
+    }
+
+    private func phoneRow(title: String, text: Binding<String>) -> some View {
+        HStack {
+            Text(title)
+                .font(.system(size: 18))
+                .foregroundColor(.black)
+
+            if isEditing {
+                TextField("", text: text)
+                    .font(.system(size: 18))
+                    .foregroundColor(.gray)
+
+                Button(action: {
+                    showContactPicker = true
+                }) {
+                    Image(systemName: "person.crop.circle.badge.plus")
+                        .foregroundColor(.blue)
+                }
             } else {
                 Text(text.wrappedValue)
                     .font(.system(size: 18))
