@@ -1,0 +1,20 @@
+/* 
+  Localizable.strings
+  mulim
+
+  Created by Noura Alrowais on 10/11/1446 AH.
+  
+*/
+"add_product_title" = "قم بإدخال منتجاتك";
+"skip_button" = "تخطي";
+"next_button" = "التالي";
+"add_new_product" = "اضافه منتج جديد";
+"done_button" = "تم";
+"cancel_button" = "الغاء";
+"upload_photo" = "تحميل صورة";
+"enter_name" = "قم بإدخال اسم المنتج";
+"enter_price" = "قم بإدخال سعر المنتج";
+"product_name" = "اسم المنتج";
+"product_price" = "سعر المنتج";
+"empty_list_text" = "قم بإدخال منتجاتك مع الأسعار
+لتسهيل عملية إدارة منتاجتك ومتابعة الدخل ";

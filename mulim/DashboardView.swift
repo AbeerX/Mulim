@@ -67,6 +67,7 @@ struct DashboardView: View {
                 }
                 .padding(.vertical)
             }
+            .toolbar(.hidden, for: .tabBar)
         }
     }
 

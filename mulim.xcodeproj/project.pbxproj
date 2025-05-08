@@ -6,7 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B7A1A6452DCC9B88009D87D8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B7A1A6432DCC9B88009D87D8 /* Localizable.strings */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		B7A1A6442DCC9B88009D87D8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B7A1A6462DCC9B8B009D87D8 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
 		EF63D0EB2DC35B2C004B6037 /* mulim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mulim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -46,6 +52,7 @@
 		EF63D0E22DC35B2C004B6037 = {
 			isa = PBXGroup;
 			children = (
+				B7A1A6432DCC9B88009D87D8 /* Localizable.strings */,
 				EF63D0ED2DC35B2C004B6037 /* mulim */,
 				EF63D0EC2DC35B2C004B6037 /* Products */,
 			);
@@ -105,6 +112,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ar,
 			);
 			mainGroup = EF63D0E22DC35B2C004B6037;
 			minimizedProjectReferenceProxies = 1;
@@ -123,6 +131,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B7A1A6452DCC9B88009D87D8 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,6 +146,18 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		B7A1A6432DCC9B88009D87D8 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B7A1A6442DCC9B88009D87D8 /* en */,
+				B7A1A6462DCC9B8B009D87D8 /* ar */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		EF63D0F42DC35B2D004B6037 /* Debug */ = {

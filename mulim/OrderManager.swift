@@ -55,12 +55,12 @@ class OrderManager: ObservableObject {
     var monthlyRevenueData: [DailyRevenue] {
         let calendar = Calendar.current
         let grouped = Dictionary(grouping: orders) {
-            calendar.component(.day, from: $0.deliveryDate)
+            calendar.component(.weekOfMonth, from: $0.deliveryDate)
         }
 
-        return (1...30).map { day in
-            let total = (grouped[day] ?? []).reduce(0.0) { $0 + $1.totalPrice }
-            return DailyRevenue(day: day, revenue: total)
+        return (1...5).map { week in
+            let total = (grouped[week] ?? []).reduce(0.0) { $0 + $1.totalPrice }
+            return DailyRevenue(day: week, revenue: total)
         }
     }
 
