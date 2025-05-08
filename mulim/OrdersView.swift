@@ -12,14 +12,11 @@ struct OrdersView: View {
                 HStack {
                     NavigationLink(destination: NewOrder()) {
                         ZStack {
-                            Circle()
-                                .stroke(Color(hex: "#00BCD4"), lineWidth: 2)
-                                .frame(width: 32, height: 32)
-                            Image(systemName: "plus")
+                            Image(systemName: "plus.circle")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 12, height: 12)
-                                .foregroundColor(Color(hex: "#00BCD4"))
+                                .frame(width: 32, height: 32)
+                                .foregroundColor(Color("C1"))
                         }
                     }
 
