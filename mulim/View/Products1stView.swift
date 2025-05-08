@@ -59,7 +59,7 @@ struct Products1stView: View {
                         }
                     }
                     .padding()
-                    .padding(.top, -50) // ✅ هذا يقلل المسافة
+                    .padding(.top, -50) 
 
                 }
             }

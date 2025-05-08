@@ -11,6 +11,7 @@ struct NewOrder: View {
     @State private var selectedProduct: Product? = nil
     @State private var note = ""
     @State private var deliveryDate = Date()
+    @State private var showContactPicker = false
 
     var isFormValid: Bool {
         !clientName.trimmingCharacters(in: .whitespaces).isEmpty &&
@@ -33,12 +34,37 @@ struct NewOrder: View {
                     isEmpty: clientName.isEmpty
                 )
 
-                RoundedTextFieldWithDot(
-                    title: "Customer phone number:",
-                    placeholder: "Enter Customer Phone",
-                    text: $customerNumber,
-                    isEmpty: customerNumber.isEmpty
-                )
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Customer phone number:")
+                        .font(.subheadline)
+
+                    ZStack(alignment: .topTrailing) {
+                        HStack {
+                            TextField("Enter Customer Phone", text: $customerNumber)
+                                .font(.subheadline)
+                                .padding(10)
+
+                            Button(action: {
+                                showContactPicker = true
+                            }) {
+                                Image(systemName: "person.crop.circle.badge.plus")
+                                    .foregroundColor(.blue)
+                                    .padding(.trailing, 10)
+                            }
+                        }
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.customBlue, lineWidth: 1)
+                        )
+
+                        if customerNumber.isEmpty {
+                            Circle()
+                                .fill(Color.red)
+                                .frame(width: 8, height: 8)
+                                .padding(6)
+                        }
+                    }
+                }
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Product:")
@@ -116,6 +142,8 @@ struct NewOrder: View {
             }
             .padding(.horizontal)
             .padding(.bottom, 100)
+        }.sheet(isPresented: $showContactPicker) {
+            ContactPicker(selectedPhoneNumber: $customerNumber)
         }
         .navigationTitle("New order")
         .navigationBarTitleDisplayMode(.inline)

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import AppIntents
 
 @main
 struct mulimApp: App {
@@ -26,6 +27,7 @@ struct mulimApp: App {
             }
         }
         .modelContainer(for: [Product.self, Order.self])
+       
 
     }
 }
