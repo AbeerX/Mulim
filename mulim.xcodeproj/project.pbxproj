@@ -15,6 +15,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				Untitled.swift,
 			);
 			target = EF63D0EA2DC35B2C004B6037 /* mulim */;
 		};
@@ -265,7 +266,7 @@
 				CODE_SIGN_ENTITLEMENTS = mulim/mulim.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7V6D5R973T;
+				DEVELOPMENT_TEAM = ZX6PW3QX64;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = mulim/Info.plist;
@@ -297,7 +298,7 @@
 				CODE_SIGN_ENTITLEMENTS = mulim/mulim.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7V6D5R973T;
+				DEVELOPMENT_TEAM = ZX6PW3QX64;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = mulim/Info.plist;

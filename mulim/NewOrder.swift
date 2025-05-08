@@ -1,6 +1,12 @@
 import SwiftUI
 import SwiftData
 
+struct SelectedProduct: Identifiable, Equatable {
+    let id = UUID()
+    let product: Product
+    var quantity: Int
+}
+
 struct NewOrder: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
@@ -8,25 +14,25 @@ struct NewOrder: View {
 
     @State private var clientName = ""
     @State private var customerNumber = ""
-    @State private var selectedProduct: Product? = nil
+    @State private var selectedProducts: [SelectedProduct] = []
     @State private var note = ""
     @State private var deliveryDate = Date()
     @State private var showContactPicker = false
+    @State private var showProductSheet = false
 
     var isFormValid: Bool {
         !clientName.trimmingCharacters(in: .whitespaces).isEmpty &&
         !customerNumber.trimmingCharacters(in: .whitespaces).isEmpty &&
-        selectedProduct != nil
+        !selectedProducts.isEmpty
     }
 
     var totalPrice: Double {
-        selectedProduct?.productPrice ?? 0.0
+        selectedProducts.reduce(0) { $0 + ($1.product.productPrice * Double($1.quantity)) }
     }
 
     var body: some View {
         ScrollView {
             VStack(spacing: 15) {
-                // ✅ بدون عنوان مكرر أو زر رجوع
                 RoundedTextFieldWithDot(
                     title: "Customer name:",
                     placeholder: "Enter Customer Name",
@@ -70,30 +76,24 @@ struct NewOrder: View {
                     Text("Product:")
                         .font(.subheadline)
 
-                    ZStack(alignment: .topTrailing) {
+                    Button(action: {
+                        showProductSheet = true
+                    }) {
                         HStack {
+                            Text(selectedProducts.isEmpty ? "Select Products" : "\(selectedProducts.count) product(s) selected")
+                                .foregroundColor(.black)
                             Spacer()
-                            Picker("", selection: $selectedProduct) {
-                                Text("None").tag(Product?.none)
-                                ForEach(products) { product in
-                                    Text(product.productName).tag(Product?.some(product))
-                                }
-                            }
-                            .pickerStyle(.menu)
-                            .tint(.blue)
+                            Image(systemName: "chevron.down")
+                                .foregroundColor(.gray)
                         }
                         .padding(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
                                 .stroke(Color.customBlue, lineWidth: 1)
                         )
-
-                        if selectedProduct == nil {
-                            Circle()
-                                .fill(Color.red)
-                                .frame(width: 8, height: 8)
-                                .padding(6)
-                        }
+                    }
+                    .sheet(isPresented: $showProductSheet) {
+                        ProductSelectionSheet(products: products, selectedProducts: $selectedProducts)
                     }
                 }
 
@@ -150,25 +150,109 @@ struct NewOrder: View {
     }
 
     func saveOrder() {
-        guard let selectedProduct = selectedProduct else { return }
-
-        let newOrder = Order(
-            productType: selectedProduct.productName,
-            clientName: clientName,
-            customerNumber: customerNumber,
-            deliveryDate: deliveryDate,
-            selectedStatus: "Open",
-            note: note,
-            productPrice: selectedProduct.productPrice // ✅ هنا يتم الحفظ
-        )
-
-        context.insert(newOrder)
+        for item in selectedProducts {
+            let newOrder = Order(
+                productType: item.product.productName,
+                clientName: clientName,
+                customerNumber: customerNumber,
+                deliveryDate: deliveryDate,
+                selectedStatus: "Open",
+                note: note
+            )
+            context.insert(newOrder)
+        }
         dismiss()
     }
-
 }
 
-// MARK: - Text Field With Dot
+struct ProductSelectionSheet: View {
+    let products: [Product]
+    @Binding var selectedProducts: [SelectedProduct]
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Button("Cancel") { dismiss() }
+                    .foregroundColor(.blue)
+
+                Spacer()
+
+                Text("Select Products")
+                    .font(.headline)
+                    .bold()
+
+                Spacer()
+
+                Button("Done") { dismiss() }
+                    .foregroundColor(.blue)
+            }
+            .padding()
+            .background(Color(UIColor.systemGray6))
+
+            Divider()
+
+            ScrollView {
+                VStack(spacing: 10) {
+                    ForEach(products) { product in
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(product.productName)
+                                        .font(.subheadline)
+                                        .bold()
+                                    Text("\(product.productPrice, specifier: "%.2f") SR")
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                }
+
+                                Spacer()
+
+                                if let index = selectedProducts.firstIndex(where: { $0.product.id == product.id }) {
+                                    HStack(spacing: 8) {
+                                        Button(action: {
+                                            if selectedProducts[index].quantity > 1 {
+                                                selectedProducts[index].quantity -= 1
+                                            } else {
+                                                selectedProducts.remove(at: index)
+                                            }
+                                        }) {
+                                            Image(systemName: "minus.circle.fill")
+                                                .foregroundColor(.red)
+                                        }
+
+                                        Text("\(selectedProducts[index].quantity)")
+                                            .frame(minWidth: 24)
+
+                                        Button(action: {
+                                            selectedProducts[index].quantity += 1
+                                        }) {
+                                            Image(systemName: "plus.circle.fill")
+                                                .foregroundColor(.green)
+                                        }
+                                    }
+                                } else {
+                                    Button(action: {
+                                        selectedProducts.append(SelectedProduct(product: product, quantity: 1))
+                                    }) {
+                                        Image(systemName: "plus.circle")
+                                            .foregroundColor(.blue)
+                                    }
+                                }
+                            }
+                            Divider()
+                        }
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
+    }
+}
+
 struct RoundedTextFieldWithDot: View {
     var title: String
     var placeholder: String
@@ -200,7 +284,6 @@ struct RoundedTextFieldWithDot: View {
     }
 }
 
-// MARK: - Text Field Design
 struct RoundedTextField: View {
     var title: String
     @Binding var text: String
@@ -221,9 +304,8 @@ struct RoundedTextField: View {
     }
 }
 
-// MARK: - Color
 extension Color {
-    static let customBlue = Color(red: 0.0, green: 0.74, blue: 0.83) // #00BCD4
+    static let customBlue = Color(red: 0.0, green: 0.74, blue: 0.83)
 }
 
 #Preview {
