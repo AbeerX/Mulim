@@ -27,9 +27,13 @@ struct products: View {
                     VStack(spacing: 16) {
                         
 //شعار اللوقو هنا
+                        Image("logo")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 186, height: 231.01)
+
                         
-                        
-                        Text("There are no products currently available.")
+                        Text("Thereـareـnoـproductsـcurrentlyـavailable.")
                             .foregroundColor(.gray)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
@@ -99,35 +103,6 @@ struct products: View {
                                         .frame(width: 360, height: 82)
 
                                       )
-                                
-//                                .swipeActions(edge: .trailing) {
-//                                      Button(role: .destructive) {
-//                                          modelContext.delete(product)
-//                                      } label: {
-//                                          Label("Delete", systemImage: "trash")
-//                                      }
-//
-//                                      Button {
-//                                          editProduct = product
-//                                          showAddSheet = true
-//                                      } label: {
-//                                          Label("Edit", systemImage: "pencil")
-//                                      }.tint(.blue)
-//                                  }
-//                                Menu {
-//                                    Button("Edit") {
-//                                        editProduct = product
-//                                        showAddSheet = true
-//                                    }
-//                                    Button("Delete", role: .destructive) {
-//                                        modelContext.delete(product)
-//                                    }
-//                                } label: {
-//                                    Image(systemName: "ellipsis")
-//                                        .rotationEffect(.degrees(90))
-//                                        .padding(.top, 4)
-//                                }
-                                
                                 
                                 
                             }
