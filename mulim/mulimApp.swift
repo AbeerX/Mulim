@@ -20,17 +20,36 @@ struct mulimApp: App {
         WindowGroup {
             if !hasSeenOnboarding {
                 Onbording()
+                    .environmentObject(orderManager)
+                    .preferredColorScheme(.light)
             } else if !hasCompletedFirstSetup {
                 Products1stView {
                     hasCompletedFirstSetup = true
                 }
+                .environmentObject(orderManager)
+                .preferredColorScheme(.light)
             } else {
                 MainTabView()
                     .environmentObject(orderManager)
+                    .preferredColorScheme(.light)
             }
         }
         .modelContainer(for: [Product.self, Order.self])
-       
+
+//        WindowGroup {
+//            if !hasSeenOnboarding {
+//                Onbording()
+//            } else if !hasCompletedFirstSetup {
+//                Products1stView {
+//                    hasCompletedFirstSetup = true
+//                }
+//            } else {
+//                MainTabView()
+//                    .environmentObject(orderManager)
+//            }
+//        }
+//        .modelContainer(for: [Product.self, Order.self])
+//       
 
     }
 }
