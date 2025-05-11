@@ -58,7 +58,7 @@ struct MainTabView: View {
                 Main(orderManager: orderManager, orders: orders)
             }
             .tabItem {
-                Image("mulimicon24")
+                Image("Mulimiconbold")
                     .renderingMode(.template)
                     .resizable().frame(width: 24, height: 24).offset(x: 20)
                   
