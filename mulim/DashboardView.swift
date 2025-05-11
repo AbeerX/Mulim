@@ -14,10 +14,6 @@ struct DashboardView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    Text("Report")
-                        .font(.largeTitle).bold()
-                        .padding(.horizontal)
-
                     // Dashboard Cards
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
                         dashboardCard(title: "Total Revenue", value: String(format: "%.0f SAR", orderManager.totalRevenue))
@@ -40,7 +36,8 @@ struct DashboardView: View {
                     .padding(.horizontal)
 
                     Text("Revenue Comparison Over Time")
-                        .font(.headline)
+                        .font(.custom("SF Pro", size: 16))
+                        .foregroundColor(Color(hex: "#7F7F7F"))
                         .padding(.horizontal)
 
                     Picker("Chart Type", selection: $selectedPeriod) {
@@ -60,36 +57,46 @@ struct DashboardView: View {
                     }
 
                     Text("You added \(orderManager.thisWeekOrders.count) orders this week – \(orderManager.weeklyOrderGrowth)% more than last week.")
-                        .font(.callout)
+                        .font(.custom("SF Pro", size: 16))
+                        .foregroundColor(Color(hex: "#7F7F7F"))
                         .padding(.horizontal)
 
                     Spacer()
                 }
                 .padding(.vertical)
             }
-            .toolbar(.hidden, for: .tabBar)
+            .navigationTitle(Text("Report")
+                .font(.custom("SF Pro", size: 22))
+                .fontWeight(.regular)
+            )
+            .navigationBarTitleDisplayMode(.inline)
+            .tint(.black) // يجعل زر الرجوع التلقائي أسود بدون كلمة "Back"
         }
     }
 
     // MARK: - Dashboard Card With Icon Support
     @ViewBuilder
     func dashboardCard<V: View>(title: String, value: String, @ViewBuilder icon: () -> V) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(title)
-                .font(.caption)
-                .foregroundColor(.gray)
+        VStack(alignment: .center, spacing: 4) {
+            Text(value)
+                .font(.custom("SF Pro", size: 16))
+                .foregroundColor(.black)
 
-            HStack {
-                Text(value)
-                    .font(.subheadline)
-                    .bold()
+            HStack(spacing: 4) {
+                Text(title)
+                    .font(.custom("SF Pro", size: 16))
+                    .foregroundColor(Color(hex: "#7F7F7F"))
 
                 icon()
             }
         }
         .frame(maxWidth: .infinity, minHeight: 65)
         .padding(10)
-        .background(Color(.systemGray6))
+        .background(Color.white)
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color(hex: "#00BCD4"), lineWidth: 1)
+        )
         .cornerRadius(10)
     }
 
@@ -115,9 +122,6 @@ struct DashboardView: View {
         }
     }
 }
-
-
-
 
 #Preview {
     DashboardView()

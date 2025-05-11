@@ -1,10 +1,71 @@
 import SwiftUI
 import SwiftData
+import Speech
+import AVFoundation
 
+// ✅ كلاس التعرف على الصوت
+class SpeechRecognizer: ObservableObject {
+    private let recognizer = SFSpeechRecognizer()
+    private let audioEngine = AVAudioEngine()
+    private var request = SFSpeechAudioBufferRecognitionRequest()
+    private var task: SFSpeechRecognitionTask?
+
+    @Published var recognizedText = ""
+
+    func requestPermission() {
+        SFSpeechRecognizer.requestAuthorization { status in
+            if status != .authorized {
+                print("Speech recognition not authorized.")
+            }
+        }
+    }
+
+    func startRecording() {
+        recognizedText = ""
+        stopRecording()
+
+        let node = audioEngine.inputNode
+        let recordingFormat = node.outputFormat(forBus: 0)
+        request = SFSpeechAudioBufferRecognitionRequest()
+
+        node.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
+            self.request.append(buffer)
+        }
+
+        do {
+            audioEngine.prepare()
+            try audioEngine.start()
+
+            task = recognizer?.recognitionTask(with: request) { result, _ in
+                if let result = result {
+                    DispatchQueue.main.async {
+                        self.recognizedText = result.bestTranscription.formattedString
+                    }
+                }
+            }
+        } catch {
+            print("Error starting audio engine: \(error.localizedDescription)")
+        }
+    }
+
+    func stopRecording() {
+        task?.cancel()
+        task = nil
+        audioEngine.stop()
+        request.endAudio()
+        audioEngine.inputNode.removeTap(onBus: 0)
+    }
+}
+
+// ✅ الصفحة الرئيسية
 struct OrdersView: View {
     @Query var orders: [Order]
-    @Query var products: [Product] // ✅ نضيف هذا السطر لتمرير المنتجات لاحقًا
+    @Query var products: [Product]
     @State private var selectedTab: String = "Current"
+    @State private var searchText: String = ""
+    @State private var isRecording = false
+
+    @StateObject private var speechRecognizer = SpeechRecognizer()
 
     var body: some View {
         NavigationStack {
@@ -28,7 +89,8 @@ struct OrdersView: View {
                 }
                 .padding(.horizontal)
 
-                TextField("Search", text: .constant(""))
+                // حقل البحث + زر المايك أو زر الإيقاف
+                TextField("Search", text: $searchText)
                     .padding(10)
                     .frame(height: 40)
                     .background(Color(.systemGray6))
@@ -36,9 +98,23 @@ struct OrdersView: View {
                     .overlay(
                         HStack {
                             Spacer()
-                            Image(systemName: "mic.fill")
-                                .foregroundColor(.gray)
-                                .padding(.trailing, 19)
+                            if isRecording {
+                                Image(systemName: "stop.circle.fill")
+                                    .foregroundColor(.red)
+                                    .padding(.trailing, 19)
+                                    .onTapGesture {
+                                        speechRecognizer.stopRecording()
+                                        isRecording = false
+                                    }
+                            } else {
+                                Image(systemName: "mic.fill")
+                                    .foregroundColor(.gray)
+                                    .padding(.trailing, 19)
+                                    .onTapGesture {
+                                        speechRecognizer.startRecording()
+                                        isRecording = true
+                                    }
+                            }
                         }
                     )
                     .padding(.horizontal)
@@ -65,13 +141,25 @@ struct OrdersView: View {
                     .frame(height: 1)
                     .foregroundColor(Color.gray.opacity(0.3))
 
+                // التحديث التلقائي لحقل البحث
+                .onChange(of: speechRecognizer.recognizedText) { newValue in
+                    searchText = newValue
+                }
+                .onAppear {
+                    speechRecognizer.requestPermission()
+                }
+
                 // تصفية الطلبات
                 let filteredOrders = orders.filter { order in
-                    if selectedTab == "Current" {
-                        return order.selectedStatus == "Open"
-                    } else {
-                        return order.selectedStatus == "Closed" || order.selectedStatus == "Canceled"
-                    }
+                    let matchesTab = selectedTab == "Current"
+                        ? order.selectedStatus == "Open"
+                        : (order.selectedStatus == "Closed" || order.selectedStatus == "Canceled")
+
+                    let matchesSearch = searchText.isEmpty ||
+                        order.clientName.localizedCaseInsensitiveContains(searchText) ||
+                        order.customerNumber.localizedCaseInsensitiveContains(searchText)
+
+                    return matchesTab && matchesSearch
                 }
 
                 // عرض الطلبات
@@ -85,7 +173,6 @@ struct OrdersView: View {
                     ScrollView {
                         VStack(spacing: 12) {
                             ForEach(filteredOrders) { order in
-                                // ✅ نمرر المنتجات بدل [] فارغة
                                 NavigationLink(destination: OrderDetailsView(order: order, products: products)) {
                                     orderSummaryView(order)
                                 }
@@ -168,7 +255,6 @@ struct OrdersView: View {
             )
     }
 }
-
 
 #Preview {
     OrdersView()
