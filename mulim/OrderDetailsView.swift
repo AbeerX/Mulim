@@ -3,15 +3,18 @@ import SwiftData
 
 struct OrderDetailsView: View {
     @Bindable var order: Order
-    @Environment(\.dismiss) private var dismiss
+    var products: [Product]
 
+    @Environment(\.dismiss) private var dismiss
     @State private var isEditing = false
     @State private var showContactPicker = false
+    @State private var showProductEditor = false
+
+    @State private var selectedProducts: [SelectedProduct] = []
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // العنوان وأزرار الرجوع والتعديل
                 HStack {
                     if isEditing {
                         Button("Cancel") {
@@ -19,10 +22,8 @@ struct OrderDetailsView: View {
                         }
                         .foregroundColor(.gray)
                     } else {
-                        Button(action: {
-                            dismiss()
-                        }) {
-                            HStack(spacing: 4) {
+                        Button(action: { dismiss() }) {
+                            HStack {
                                 Image(systemName: "chevron.backward")
                                 Text("Back")
                             }
@@ -34,26 +35,29 @@ struct OrderDetailsView: View {
 
                     Text("Order details")
                         .font(.system(size: 18, weight: .medium))
-                        .foregroundColor(.black)
 
                     Spacer()
 
                     Button(action: {
                         if isEditing {
+                            order.orderedProducts = selectedProducts.map {
+                                OrderedProduct(
+                                    name: $0.product.productName,
+                                    quantity: $0.quantity,
+                                    price: $0.product.productPrice
+                                )
+                            }
                             isEditing = false
-                            dismiss()
                         } else {
                             isEditing = true
                         }
                     }) {
                         if isEditing {
-                            Text("Done")
-                                .foregroundColor(.blue)
+                            Text("Done").foregroundColor(.blue)
                         } else {
                             Image(systemName: "square.and.pencil")
                                 .resizable()
                                 .frame(width: 20, height: 20)
-                                .foregroundColor(.black)
                         }
                     }
                 }
@@ -64,14 +68,42 @@ struct OrderDetailsView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         groupedBox {
-                            fieldRow(title: "Product Type:", text: $order.productType)
-                            Divider().padding(.horizontal, 10)
-                            fieldRow(title: "Price:", text: .constant(String(format: "%.2f SR", order.totalPrice)))
+                            if isEditing {
+                                Button {
+                                    showProductEditor = true
+                                } label: {
+                                    HStack {
+                                        Text("Edit Products")
+                                        Spacer()
+                                        Image(systemName: "chevron.right")
+                                    }
+                                }
+                                .padding()
+                            } else {
+                                VStack(alignment: .leading) {
+                                    Text("Products:")
+                                        .font(.headline)
+                                    ForEach(order.orderedProducts) { item in
+                                        Text("\(item.quantity)x \(item.name) - \(item.price, specifier: "%.2f") SR")
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
+                                    }
+                                }
+                                .padding()
+                            }
 
+                            Divider().padding(.horizontal, 10)
+
+                            fieldRow(
+                                title: "Total:",
+                                value: String(format: "%.2f SR", order.orderedProducts.reduce(0) {
+                                    $0 + ($1.price * Double($1.quantity))
+                                })
+                            )
                         }
 
                         groupedBox {
-                            fieldRow(title: "Client name:", text: $order.clientName)
+                            fieldRow(title: "Client name:", value: order.clientName, editable: true, binding: $order.clientName)
                             Divider().padding(.horizontal, 10)
                             phoneRow(title: "Customer number:", text: $order.customerNumber)
                         }
@@ -79,17 +111,15 @@ struct OrderDetailsView: View {
                         groupedBox {
                             deliveryDateRow(title: "Delivery time:", date: $order.deliveryDate)
                             Divider().padding(.horizontal, 10)
-                            HStack(alignment: .center, spacing: 10) {
+                            HStack {
                                 Text("Order status:")
                                     .font(.system(size: 18))
-                                    .foregroundColor(.black)
 
-                                statusButton(title: "Canceled", color: Color(hex: "#FFC835"))
-                                statusButton(title: "Open", color: Color(hex: "#00BCD4"))
-                                statusButton(title: "Closed", color: Color(hex: "#FF5722"))
+                                statusButton(title: "Canceled", color: .yellow)
+                                statusButton(title: "Open", color: .blue)
+                                statusButton(title: "Closed", color: .red)
                             }
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 12)
+                            .padding()
                         }
 
                         groupedBox {
@@ -98,19 +128,54 @@ struct OrderDetailsView: View {
 
                         Spacer()
                     }
-                    .padding(.top, 12)
+                    .padding(.top)
                 }
             }
             .navigationBarBackButtonHidden(true)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
+
+            // Contact Picker
             .sheet(isPresented: $showContactPicker) {
                 ContactPicker(selectedPhoneNumber: $order.customerNumber)
+            }
+
+            // Product Selection Sheet
+            .sheet(isPresented: $showProductEditor, onDismiss: {
+                // تحديث المنتجات داخل الطلب بعد التعديل
+                if isEditing {
+                    order.orderedProducts = selectedProducts.map {
+                        OrderedProduct(
+                            name: $0.product.productName,
+                            quantity: $0.quantity,
+                            price: $0.product.productPrice
+                        )
+                    }
+                }
+            }) {
+                ProductSelectionSheet(
+                    products: products,
+                    originalOrder: order,
+                    selectedProducts: $selectedProducts
+                )
+            }
+
+            // تحديث الكميات عند كل مرة يتم فتح الشيت
+            .onChange(of: showProductEditor) { newValue in
+                if newValue == true {
+                    selectedProducts = order.orderedProducts.map {
+                        SelectedProduct(
+                            product: Product(productName: $0.name, productPrice: $0.price),
+                            quantity: $0.quantity
+                        )
+                    }
+                }
             }
         }
     }
 
-    // MARK: - Components
+    // MARK: - UI Components
+
     private func groupedBox<Content: View>(@ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             content()
@@ -123,18 +188,17 @@ struct OrderDetailsView: View {
         .padding(.horizontal, 20)
     }
 
-    private func fieldRow(title: String, text: Binding<String>) -> some View {
+    private func fieldRow(title: String, value: String, editable: Bool = false, binding: Binding<String>? = nil) -> some View {
         HStack {
             Text(title)
                 .font(.system(size: 18))
-                .foregroundColor(.black)
 
-            if isEditing {
-                TextField("", text: text)
+            if editable, let binding = binding, isEditing {
+                TextField("", text: binding)
                     .font(.system(size: 18))
                     .foregroundColor(.gray)
             } else {
-                Text(text.wrappedValue)
+                Text(value)
                     .font(.system(size: 18))
                     .foregroundColor(.gray)
             }
@@ -149,16 +213,15 @@ struct OrderDetailsView: View {
         HStack {
             Text(title)
                 .font(.system(size: 18))
-                .foregroundColor(.black)
 
             if isEditing {
                 TextField("", text: text)
                     .font(.system(size: 18))
                     .foregroundColor(.gray)
 
-                Button(action: {
+                Button {
                     showContactPicker = true
-                }) {
+                } label: {
                     Image(systemName: "person.crop.circle.badge.plus")
                         .foregroundColor(.blue)
                 }
@@ -178,7 +241,6 @@ struct OrderDetailsView: View {
         HStack {
             Text(title)
                 .font(.system(size: 18))
-                .foregroundColor(.black)
 
             if isEditing {
                 DatePicker("", selection: date, displayedComponents: .date)
@@ -200,7 +262,6 @@ struct OrderDetailsView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.system(size: 18))
-                .foregroundColor(.black)
 
             if isEditing {
                 TextEditor(text: text)
@@ -224,13 +285,13 @@ struct OrderDetailsView: View {
 
     private func statusButton(title: String, color: Color) -> some View {
         Text(title)
-            .font(.system(size: 12))
+            .font(.system(size: 12, weight: order.selectedStatus == title ? .bold : .regular))
             .foregroundColor(.black)
             .padding(.horizontal, 13)
             .padding(.vertical, 6)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(order.selectedStatus == title ? color.opacity(0.4) : Color.clear)
+                    .fill(order.selectedStatus == title ? color.opacity(0.2) : Color.clear)
                     .overlay(
                         RoundedRectangle(cornerRadius: 20)
                             .stroke(color, lineWidth: 1.5)
@@ -244,8 +305,7 @@ struct OrderDetailsView: View {
     }
 }
 
-
-// MARK: - Hex Color Support
+// MARK: - Hex Support
 extension Color {
     init(hex: String) {
         let scanner = Scanner(string: hex)
@@ -260,13 +320,16 @@ extension Color {
 }
 
 #Preview {
-    let sampleOrder = Order(
-        productType: "Test Cake",
+    let order = Order(
         clientName: "Test Client",
         customerNumber: "0500000000",
         deliveryDate: .now,
         selectedStatus: "Open",
-        note: "Extra note here"
+        note: "Extra note here",
+        orderedProducts: [
+            OrderedProduct(name: "Test Cake", quantity: 2, price: 25.0)
+        ]
     )
-    return OrderDetailsView(order: sampleOrder)
+
+    return OrderDetailsView(order: order, products: [])
 }

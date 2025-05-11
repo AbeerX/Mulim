@@ -93,7 +93,18 @@ struct NewOrder: View {
                         )
                     }
                     .sheet(isPresented: $showProductSheet) {
-                        ProductSelectionSheet(products: products, selectedProducts: $selectedProducts)
+                        ProductSelectionSheet(
+                            products: products,
+                            originalOrder: Order(
+                                clientName: "",
+                                customerNumber: "",
+                                deliveryDate: .now,
+                                selectedStatus: "",
+                                note: "",
+                                orderedProducts: []
+                            ),
+                            selectedProducts: $selectedProducts
+                        )
                     }
                 }
 
@@ -103,10 +114,22 @@ struct NewOrder: View {
                     Text("Delivery time:")
                         .font(.subheadline)
                         .padding(.horizontal, 4)
-                    DatePicker("", selection: $deliveryDate, displayedComponents: .date)
-                        .datePickerStyle(.graphical)
-                        .labelsHidden()
-                        .frame(maxHeight: 300)
+                    HStack {
+                        Text("Delivery time:")
+                            .font(.subheadline)
+                            .foregroundColor(.black)
+
+                        DatePicker("", selection: $deliveryDate, displayedComponents: .date)
+                            .labelsHidden()
+                            .datePickerStyle(.compact)
+
+                        Spacer()
+                    }
+                    .padding(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.customBlue, lineWidth: 1)
+                    )
                 }
                 .padding(8)
                 .overlay(
@@ -142,7 +165,8 @@ struct NewOrder: View {
             }
             .padding(.horizontal)
             .padding(.bottom, 100)
-        }.sheet(isPresented: $showContactPicker) {
+        }
+        .sheet(isPresented: $showContactPicker) {
             ContactPicker(selectedPhoneNumber: $customerNumber)
         }
         .navigationTitle("New order")
@@ -150,108 +174,29 @@ struct NewOrder: View {
     }
 
     func saveOrder() {
-        for item in selectedProducts {
-            let newOrder = Order(
-                productType: item.product.productName,
-                clientName: clientName,
-                customerNumber: customerNumber,
-                deliveryDate: deliveryDate,
-                selectedStatus: "Open",
-                note: note
+        let productModels = selectedProducts.map { item in
+            OrderedProduct(
+                name: item.product.productName,
+                quantity: item.quantity,
+                price: item.product.productPrice
             )
-            context.insert(newOrder)
         }
+
+        let newOrder = Order(
+            clientName: clientName,
+            customerNumber: customerNumber,
+            deliveryDate: deliveryDate,
+            selectedStatus: "Open",
+            note: note,
+            orderedProducts: productModels
+        )
+
+        context.insert(newOrder)
         dismiss()
     }
 }
 
-struct ProductSelectionSheet: View {
-    let products: [Product]
-    @Binding var selectedProducts: [SelectedProduct]
-    @Environment(\.dismiss) var dismiss
-
-    var body: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Button("Cancel") { dismiss() }
-                    .foregroundColor(.blue)
-
-                Spacer()
-
-                Text("Select Products")
-                    .font(.headline)
-                    .bold()
-
-                Spacer()
-
-                Button("Done") { dismiss() }
-                    .foregroundColor(.blue)
-            }
-            .padding()
-            .background(Color(UIColor.systemGray6))
-
-            Divider()
-
-            ScrollView {
-                VStack(spacing: 10) {
-                    ForEach(products) { product in
-                        VStack(alignment: .leading, spacing: 6) {
-                            HStack {
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(product.productName)
-                                        .font(.subheadline)
-                                        .bold()
-                                    Text("\(product.productPrice, specifier: "%.2f") SR")
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
-                                }
-
-                                Spacer()
-
-                                if let index = selectedProducts.firstIndex(where: { $0.product.id == product.id }) {
-                                    HStack(spacing: 8) {
-                                        Button(action: {
-                                            if selectedProducts[index].quantity > 1 {
-                                                selectedProducts[index].quantity -= 1
-                                            } else {
-                                                selectedProducts.remove(at: index)
-                                            }
-                                        }) {
-                                            Image(systemName: "minus.circle.fill")
-                                                .foregroundColor(.red)
-                                        }
-
-                                        Text("\(selectedProducts[index].quantity)")
-                                            .frame(minWidth: 24)
-
-                                        Button(action: {
-                                            selectedProducts[index].quantity += 1
-                                        }) {
-                                            Image(systemName: "plus.circle.fill")
-                                                .foregroundColor(.green)
-                                        }
-                                    }
-                                } else {
-                                    Button(action: {
-                                        selectedProducts.append(SelectedProduct(product: product, quantity: 1))
-                                    }) {
-                                        Image(systemName: "plus.circle")
-                                            .foregroundColor(.blue)
-                                    }
-                                }
-                            }
-                            Divider()
-                        }
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
-                    }
-                }
-            }
-        }
-        .presentationDetents([.medium, .large])
-        .presentationDragIndicator(.visible)
-    }
-}
+// MARK: - Helpers
 
 struct RoundedTextFieldWithDot: View {
     var title: String
@@ -307,6 +252,8 @@ struct RoundedTextField: View {
 extension Color {
     static let customBlue = Color(red: 0.0, green: 0.74, blue: 0.83)
 }
+
+// MARK: - Preview
 
 #Preview {
     NewOrder()

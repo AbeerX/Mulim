@@ -1,23 +1,14 @@
-//
-//  products.swift
-//  mulim
-//
-//  Created by Abeer on 08/11/1446 AH.
-//
 import SwiftUI
 import SwiftData
+import PhotosUI
 
-struct products: View {
+struct ProductsView: View {
+
     @Environment(\.modelContext) private var modelContext
     @Query private var products: [Product]
 
     @State private var showAddSheet = false
     @State private var editProduct: Product?
-
-    let columns = [
-        GridItem(.flexible(), spacing: 16),
-        GridItem(.flexible(), spacing: 16)
-    ]
 
     var body: some View {
         NavigationStack {
@@ -25,10 +16,6 @@ struct products: View {
                 if products.isEmpty {
                     Spacer()
                     VStack(spacing: 16) {
-                        
-//شعار اللوقو هنا
-                        
-                        
                         Text("There are no products currently available.")
                             .foregroundColor(.gray)
                             .multilineTextAlignment(.center)
@@ -40,7 +27,7 @@ struct products: View {
                         LazyVStack(spacing: -8) {
                             ForEach(products) { product in
                                 HStack(spacing: 16) {
-                                // الصورة
+                                    // الصورة
                                     if let imageData = product.productImage,
                                        let uiImage = UIImage(data: imageData) {
                                         Image(uiImage: uiImage)
@@ -56,87 +43,43 @@ struct products: View {
                                             .overlay(Image(systemName: "photo").foregroundColor(.gray))
                                     }
 
-                                    // الاسم
                                     Text(product.productName)
                                         .font(.custom("SFPro", size: 18))
                                         .frame(maxWidth: .infinity, alignment: .leading)
-                                    
-                                           //السعر
 
                                     VStack(alignment: .trailing, spacing: 4) {
-                                                Menu {
-                                                    Button("Edit") {
-                                                        editProduct = product
-                                                        showAddSheet = true
-                                                    }
-                                                    Button("Delete", role: .destructive) {
-                                                        modelContext.delete(product)
-                                                    }
-                                                } label: {
-                                                    Text("⋯")
-                                                        .font(.title3)
-                                                        .bold()
-                                                        .padding(.bottom, 38)
-
-                                                }
-
-                                                Text("\(product.productPrice, specifier: "%.2f") SR")
-                                                    .font(.custom("SFPro", size: 14))
-                                                    .foregroundColor(.gray)
-                                                    .padding(.top, -39)
-
+                                        Menu {
+                                            Button("Edit") {
+                                                editProduct = product
+                                                showAddSheet = true
                                             }
+                                            Button("Delete", role: .destructive) {
+                                                modelContext.delete(product)
+                                            }
+                                        } label: {
+                                            Text("⋯")
+                                                .font(.title3)
+                                                .bold()
+                                                .padding(.bottom, 38)
+                                        }
+
+                                        Text("\(product.productPrice, specifier: "%.2f") SR")
+                                            .font(.custom("SFPro", size: 14))
+                                            .foregroundColor(.gray)
+                                            .padding(.top, -39)
+                                    }
                                     .frame(width: 80, alignment: .trailing)
-//
-                                    
                                 }
                                 .padding()
-                                
                                 .background(
                                     RoundedRectangle(cornerRadius: 12)
                                         .stroke(Color("C1"))
-//                                        .frame(width: 376, height: 82)
                                         .frame(width: 360, height: 82)
-
-                                      )
-                                
-//                                .swipeActions(edge: .trailing) {
-//                                      Button(role: .destructive) {
-//                                          modelContext.delete(product)
-//                                      } label: {
-//                                          Label("Delete", systemImage: "trash")
-//                                      }
-//
-//                                      Button {
-//                                          editProduct = product
-//                                          showAddSheet = true
-//                                      } label: {
-//                                          Label("Edit", systemImage: "pencil")
-//                                      }.tint(.blue)
-//                                  }
-//                                Menu {
-//                                    Button("Edit") {
-//                                        editProduct = product
-//                                        showAddSheet = true
-//                                    }
-//                                    Button("Delete", role: .destructive) {
-//                                        modelContext.delete(product)
-//                                    }
-//                                } label: {
-//                                    Image(systemName: "ellipsis")
-//                                        .rotationEffect(.degrees(90))
-//                                        .padding(.top, 4)
-//                                }
-                                
-                                
-                                
+                                )
                             }
                         }
-                        
-                        .padding(.top, -50) // تقليل المسافه بين العنوان وتحته
-
+                        .padding(.top, -50)
                         .padding()
-
                     }
                 }
             }
@@ -157,22 +100,118 @@ struct products: View {
                 ToolbarItem(placement: .principal) {
                     Text("Products")
                         .font(.system(size: 18))
-
                 }
             }
 
             .sheet(isPresented: $showAddSheet) {
                 NavigationStack {
-                    productSheet(productToEdit: editProduct)
+                    ProductFormSheet(productToEdit: editProduct)
                 }
                 .presentationDetents([.medium])
+            }
+
+        }
+    }
+}
+
+struct ProductFormSheet: View {
+    var productToEdit: Product?
+
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) var modelContext
+
+    @State private var name: String = ""
+    @State private var price: String = ""
+    @State private var selectedItem: PhotosPickerItem?
+    @State private var selectedImageData: Data?
+
+    var body: some View {
+        VStack {
+            HStack {
+                Button("cancel_button") {
+                    dismiss()
+                }
+                .foregroundColor(.gray)
+
+                Spacer()
+
+                Text("add_new_product").font(.system(size: 16))
+
+                Spacer()
+
+                Button("done_button") {
+                    if let priceValue = Double(price) {
+                        if let productToEdit = productToEdit {
+                            productToEdit.productName = name
+                            productToEdit.productPrice = priceValue
+                            productToEdit.productImage = selectedImageData
+                        } else {
+                            let newProduct = Product(productName: name, productPrice: priceValue, productImage: selectedImageData)
+                            modelContext.insert(newProduct)
+                        }
+                        dismiss()
+                    }
+                }
+                .foregroundColor(.blue)
+            }
+            .padding()
+
+            PhotosPicker(selection: $selectedItem, matching: .images) {
+                if let data = selectedImageData, let uiImage = UIImage(data: data) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 207)
+                } else {
+                    VStack {
+                        Image(systemName: "photo.badge.plus")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 48, height: 48)
+                            .foregroundColor(Color("C1"))
+                        Text("upload_photo")
+                            .font(.system(size: 14))
+                            .foregroundColor(.black)
+                    }
+                    .frame(height: 207)
+                    .frame(maxWidth: .infinity)
+                    .background(Color("PhotoGray"))
+                }
+            }
+            .onChange(of: selectedItem) { newItem in
+                Task {
+                    if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                        selectedImageData = data
+                    }
+                }
+            }
+
+            HStack {
+                Text("product_name")
+                TextField("enter_name", text: $name)
+            }
+            .padding()
+            Divider()
+
+            HStack {
+                Text("product_price")
+                TextField("enter_price", text: $price)
+                    .keyboardType(.decimalPad)
+            }
+            .padding()
+
+            Spacer()
+        }
+        .onAppear {
+            if let product = productToEdit {
+                name = product.productName
+                price = String(product.productPrice)
+                selectedImageData = product.productImage
             }
         }
     }
 }
 
-
 #Preview {
-  products()
+    ProductsView()
 }
-

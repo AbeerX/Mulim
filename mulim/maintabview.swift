@@ -48,10 +48,12 @@ import SwiftData
 
 struct MainTabView: View {
     @Query var orders: [Order]
+    @Query var products: [Product]
     @EnvironmentObject var orderManager: OrderManager
 
     var body: some View {
         TabView {
+            // تبويب الصفحة الرئيسية
             NavigationStack {
                 Main(orderManager: orderManager, orders: orders)
             }
@@ -60,6 +62,7 @@ struct MainTabView: View {
                 Text("Main")
             }
 
+            // تبويب الطلبات
             NavigationStack {
                 OrdersView()
             }
@@ -68,15 +71,17 @@ struct MainTabView: View {
                 Text("Orders")
             }
 
+            // تبويب المنتجات
             NavigationStack {
-                products()
+                ProductsView()
             }
             .tabItem {
-                Image(systemName: "book.pages.fill")
+                Image(systemName: "person.fill")
                 Text("Products")
             }
         }
-        .accentColor(Color("C1"))
+        .accentColor(Color("C1")) // تأكدي من وجود هذا اللون في Assets
     }
 }
+
 

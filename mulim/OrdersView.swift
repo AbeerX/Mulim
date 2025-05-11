@@ -3,6 +3,7 @@ import SwiftData
 
 struct OrdersView: View {
     @Query var orders: [Order]
+    @Query var products: [Product] // ✅ نضيف هذا السطر لتمرير المنتجات لاحقًا
     @State private var selectedTab: String = "Current"
 
     var body: some View {
@@ -11,13 +12,11 @@ struct OrdersView: View {
                 // العنوان وزر الإضافة
                 HStack {
                     NavigationLink(destination: NewOrder()) {
-                        ZStack {
-                            Image(systemName: "plus.circle")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 32, height: 32)
-                                .foregroundColor(Color("C1"))
-                        }
+                        Image(systemName: "plus.circle")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 32, height: 32)
+                            .foregroundColor(Color("C1"))
                     }
 
                     Spacer()
@@ -44,22 +43,19 @@ struct OrdersView: View {
                     )
                     .padding(.horizontal)
 
+                // التبويبات
                 HStack {
-                    Button(action: {
-                        selectedTab = "Current"
-                    }) {
+                    Button(action: { selectedTab = "Current" }) {
                         Text("Current orders")
-                            .font(.system(size: 18, weight: .regular))
+                            .font(.system(size: 18))
                             .foregroundColor(selectedTab == "Current" ? .black : Color(hex: "#A8A8A8"))
                     }
 
                     Spacer()
 
-                    Button(action: {
-                        selectedTab = "Previous"
-                    }) {
+                    Button(action: { selectedTab = "Previous" }) {
                         Text("Previous orders")
-                            .font(.system(size: 18, weight: .regular))
+                            .font(.system(size: 18))
                             .foregroundColor(selectedTab == "Previous" ? .black : Color(hex: "#A8A8A8"))
                     }
                 }
@@ -69,6 +65,7 @@ struct OrdersView: View {
                     .frame(height: 1)
                     .foregroundColor(Color.gray.opacity(0.3))
 
+                // تصفية الطلبات
                 let filteredOrders = orders.filter { order in
                     if selectedTab == "Current" {
                         return order.selectedStatus == "Open"
@@ -77,6 +74,7 @@ struct OrdersView: View {
                     }
                 }
 
+                // عرض الطلبات
                 if filteredOrders.isEmpty {
                     Spacer()
                     Text("No orders yet.")
@@ -87,57 +85,9 @@ struct OrdersView: View {
                     ScrollView {
                         VStack(spacing: 12) {
                             ForEach(filteredOrders) { order in
-                                NavigationLink(destination: OrderDetailsView(order: order)) {
-                                    VStack(alignment: .leading, spacing: 12) {
-                                        HStack {
-                                            Image(systemName: "doc.text")
-                                                .font(.system(size: 14))
-                                                .foregroundColor(Color(hex: "#393939"))
-
-                                            Text(order.productType)
-                                                .font(.system(size: 12, weight: .bold))
-                                                .foregroundColor(Color(hex: "#393939"))
-
-                                            Spacer()
-                                            statusBadge(for: order.selectedStatus)
-                                        }
-
-                                        HStack {
-                                            Image(systemName: "person")
-                                                .font(.system(size: 14))
-                                                .foregroundColor(Color(hex: "#393939"))
-
-                                            Text(order.clientName)
-                                                .font(.system(size: 12))
-                                                .foregroundColor(Color(hex: "#393939"))
-                                        }
-
-                                        HStack {
-                                            Image(systemName: "clock")
-                                                .font(.system(size: 14))
-                                                .foregroundColor(Color(hex: "#393939"))
-
-                                            Text("Delivery: \(order.deliveryDate.formatted(date: .abbreviated, time: .omitted))")
-                                                .font(.system(size: 12, weight: .bold))
-                                                .foregroundColor(Color(hex: "#393939"))
-                                        }
-
-                                        HStack {
-                                            Image(systemName: "creditcard")
-                                                .font(.system(size: 14))
-                                                .foregroundColor(Color(hex: "#393939"))
-
-                                            Text("\(order.totalPrice, specifier: "%.2f") SR")
-                                                .font(.system(size: 12))
-                                                .foregroundColor(Color(hex: "#393939"))
-                                        }
-                                    }
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 12)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .stroke(Color(hex: "#00BCD4"), lineWidth: 1)
-                                    )
+                                // ✅ نمرر المنتجات بدل [] فارغة
+                                NavigationLink(destination: OrderDetailsView(order: order, products: products)) {
+                                    orderSummaryView(order)
                                 }
                             }
                         }
@@ -151,6 +101,50 @@ struct OrdersView: View {
         }
     }
 
+    // ✅ عرض الطلب الواحد كمربع مرتب
+    @ViewBuilder
+    func orderSummaryView(_ order: Order) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "doc.text")
+                    .font(.system(size: 14))
+                Text(order.productType)
+                    .font(.system(size: 12, weight: .bold))
+                Spacer()
+                statusBadge(for: order.selectedStatus)
+            }
+
+            HStack {
+                Image(systemName: "person")
+                    .font(.system(size: 14))
+                Text(order.clientName)
+                    .font(.system(size: 12))
+            }
+
+            HStack {
+                Image(systemName: "clock")
+                    .font(.system(size: 14))
+                Text("Delivery: \(order.deliveryDate.formatted(date: .abbreviated, time: .omitted))")
+                    .font(.system(size: 12, weight: .bold))
+            }
+
+            HStack {
+                Image(systemName: "creditcard")
+                    .font(.system(size: 14))
+                Text("\(order.totalPrice, specifier: "%.2f") SR")
+                    .font(.system(size: 12))
+            }
+        }
+        .foregroundColor(Color(hex: "#393939"))
+        .padding(.horizontal, 10)
+        .padding(.vertical, 12)
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color(hex: "#00BCD4"), lineWidth: 1)
+        )
+    }
+
+    // ✅ حالة الطلب
     func statusBadge(for status: String) -> some View {
         let color: Color = switch status {
         case "Canceled": Color(hex: "#FFC835")
@@ -166,7 +160,7 @@ struct OrdersView: View {
             .padding(.vertical, 6)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(color.opacity(0.4))
+                    .fill(Color.clear)
                     .overlay(
                         RoundedRectangle(cornerRadius: 20)
                             .stroke(color, lineWidth: 1.5)

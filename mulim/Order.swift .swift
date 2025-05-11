@@ -2,28 +2,51 @@ import Foundation
 import SwiftData
 
 @Model
+class OrderedProduct {
+    @Attribute var name: String
+    @Attribute var quantity: Int
+    @Attribute var price: Double
+
+    init(name: String, quantity: Int, price: Double) {
+        self.name = name
+        self.quantity = quantity
+        self.price = price
+    }
+}
+
+@Model
 class Order {
     @Attribute(.unique) var id: UUID
-    var productType: String
-    var clientName: String
-    var customerNumber: String
-    var deliveryDate: Date
-    var selectedStatus: String
-    var note: String
-    var productPrice: Double // ✅ السعر محفوظ هنا
+    @Attribute var clientName: String
+    @Attribute var customerNumber: String
+    @Attribute var deliveryDate: Date
+    @Attribute var selectedStatus: String
+    @Attribute var note: String
+    @Attribute var orderedProducts: [OrderedProduct]
 
-    init(id: UUID = UUID(), productType: String, clientName: String, customerNumber: String, deliveryDate: Date, selectedStatus: String, note: String = "", productPrice: Double = 0.0) {
+    init(
+        id: UUID = UUID(),
+        clientName: String,
+        customerNumber: String,
+        deliveryDate: Date,
+        selectedStatus: String,
+        note: String = "",
+        orderedProducts: [OrderedProduct] = []
+    ) {
         self.id = id
-        self.productType = productType
         self.clientName = clientName
         self.customerNumber = customerNumber
         self.deliveryDate = deliveryDate
         self.selectedStatus = selectedStatus
         self.note = note
-        self.productPrice = productPrice
+        self.orderedProducts = orderedProducts
     }
 
     var totalPrice: Double {
-        return productPrice
+        orderedProducts.reduce(0) { $0 + ($1.price * Double($1.quantity)) }
+    }
+
+    var productType: String {
+        orderedProducts.first?.name ?? "-"
     }
 }
