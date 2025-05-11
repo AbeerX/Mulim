@@ -75,7 +75,10 @@ struct ProductsView: View {
                                     RoundedRectangle(cornerRadius: 12)
                                         .stroke(Color("C1"))
                                         .frame(width: 360, height: 82)
-                                )
+
+                                      )
+                                
+                                
                             }
                         }
                         .padding(.top, -50)
