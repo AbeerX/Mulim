@@ -58,8 +58,12 @@ struct MainTabView: View {
                 Main(orderManager: orderManager, orders: orders)
             }
             .tabItem {
-                Image(systemName: "house.fill")
+                Image("Mulimiconbold")
+                    .renderingMode(.template)
+                    .resizable().frame(width: 24, height: 24).offset(x: 20)
+                  
                 Text("Main")
+
             }
 
             // تبويب الطلبات
@@ -76,7 +80,7 @@ struct MainTabView: View {
                 ProductsView()
             }
             .tabItem {
-                Image(systemName: "person.fill")
+                Image(systemName: "menucard.fill")
                 Text("Products")
             }
         }
