@@ -16,7 +16,13 @@ struct ProductsView: View {
                 if products.isEmpty {
                     Spacer()
                     VStack(spacing: 16) {
-                        Text("There are no products currently available.")
+                        
+                        Image("logo")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 186, height: 231.01)
+
+                        Text("Thereـareـnoـproductsـcurrentlyـavailable.")
                             .foregroundColor(.gray)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
