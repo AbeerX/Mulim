@@ -40,7 +40,7 @@ struct OrderDetailsView: View {
                                             }
                                         }
                     Spacer()
-                    Text("Order_status")
+                    Text("Order_details")
                    
 //                    Text("Order details")
 //                        .font(.system(size: 18, weight: .medium))
@@ -62,7 +62,7 @@ struct OrderDetailsView: View {
                         }
                     }) {
                         if isEditing {
-                            Text("Done")
+                            Text("done_button")
                                 .foregroundColor(.blue)
                         } else {
                             Image(systemName: "square.and.pencil")
@@ -113,7 +113,7 @@ struct OrderDetailsView: View {
                         }
 
                         groupedBox {
-                            fieldRow(title: "Client_name:", value: order.clientName, editable: true, binding: $order.clientName)
+                            fieldRow(title: "Customer_name:", value: order.clientName, editable: true, binding: $order.clientName)
                             Divider().padding(.horizontal, 10)
                             phoneRow(title: "Customer_number:", text: $order.customerNumber)
                         }
@@ -124,14 +124,17 @@ struct OrderDetailsView: View {
                                 .padding(.horizontal, 10)
                            
                     
-                            HStack /*(alignment, .trailing, spacing: 20)*/{
+                            HStack {
                                 Text("Order_status:")
                                     .font(.system(size: 18))
 //                                    .padding(.trailing, 13) // ← المسافة المطلوبة بين النص والأزرار
+                                statusButton(title: NSLocalizedString("Canceled", comment: ""), color: .yellow)
+                                statusButton(title: NSLocalizedString("Open", comment: ""), color: .blue)
+                                statusButton(title: NSLocalizedString("Closed", comment: ""), color: .red)
 
-                                statusButton(title: "Canceled", color: .yellow)
-                                statusButton(title: "Open", color: .blue)
-                                statusButton(title: "Closed", color: .red)
+//                                statusButton(title: "Canceled", color: .yellow)
+//                                statusButton(title: "Open", color: .blue)
+//                                statusButton(title: "Closed", color: .red)
                             }
                             .padding(.top, 16)
                             .padding(.leading, 13)
@@ -208,7 +211,7 @@ struct OrderDetailsView: View {
 
     private func fieldRow(title: String, value: String, editable: Bool = false, binding: Binding<String>? = nil) -> some View {
         HStack {
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.system(size: 18))
 
             if editable, let binding = binding, isEditing {
@@ -229,7 +232,7 @@ struct OrderDetailsView: View {
 
     private func phoneRow(title: String, text: Binding<String>) -> some View {
         HStack {
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.system(size: 18))
 
             if isEditing {
@@ -257,7 +260,7 @@ struct OrderDetailsView: View {
 
     private func deliveryDateRow(title: String, date: Binding<Date>) -> some View {
         HStack {
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.system(size: 18))
 
             if isEditing {
@@ -278,7 +281,7 @@ struct OrderDetailsView: View {
 
     private func noteRow(title: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.system(size: 18))
 
             if isEditing {
@@ -291,7 +294,9 @@ struct OrderDetailsView: View {
                             .stroke(Color(hex: "#00BCD4"), lineWidth: 1)
                     )
             } else {
-                Text(text.wrappedValue.isEmpty ? "No note" : text.wrappedValue)
+//                Text(text.wrappedValue.isEmpty ? "Noـnote" : text.wrappedValue)
+                Text(text.wrappedValue.isEmpty ? LocalizedStringKey("No_note") : LocalizedStringKey(text.wrappedValue))
+
                     .font(.system(size: 16))
                     .foregroundColor(.gray)
                     .frame(maxWidth: .infinity, alignment: .leading)
