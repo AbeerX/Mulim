@@ -57,3 +57,7 @@
 "onboarding_des2" = "Easily explore every order's details.\nEverything you need is just a tap away.";
 "onboarding_des3" = "Schedule order deliveries by day and track them with ease.\nBrowse past and upcoming orders, and organize your schedule accurately and on time.";
 "get_started" = "Get Started";
+"Notification_late_title" = "Update Order Status";
+"Notification_late_body" = "Order for %@ is still open. Please update the status if it has been delivered.";
+"Notification_today_title" = "Today's Orders";
+"Notification_today_body" = "You have %d orders scheduled for today.";

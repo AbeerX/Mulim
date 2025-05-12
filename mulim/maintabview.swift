@@ -50,6 +50,7 @@ struct MainTabView: View {
     @Query var orders: [Order]
     @Query var products: [Product]
     @EnvironmentObject var orderManager: OrderManager
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         TabView {
@@ -84,6 +85,13 @@ struct MainTabView: View {
                 Text("Products")
             }
         }
+        .onAppear {
+              orderManager.fetchOrders(context: modelContext)
+              requestNotificationPermission()
+              DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                  scheduleOrderNotifications(orders: orderManager.orders)
+              }
+          }
         .accentColor(Color("C1")) // تأكدي من وجود هذا اللون في Assets
     }
 }
