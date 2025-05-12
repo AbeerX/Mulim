@@ -67,3 +67,8 @@
 "Welcome" = "مرحبا بك";
 "weekly_summary" = "لقد أضفت %d طلبًا هذا الأسبوع – زيادة بنسبة %d%% عن الأسبوع الماضي.";
 "RevenueـComparisonـOverـTime" = "مقارنة الإيرادات بمرور الوقت";
+
+"Notification_late_title" = "تحديث حالة الطلب";
+"Notification_late_body" = "طلب %@ لا يزال مفتوح. يرجى تحديث الحالة إذا تم التسليم.";
+"Notification_today_title" = "طلبات اليوم";
+"Notification_today_body" = "عندك %d طلبات اليوم.";

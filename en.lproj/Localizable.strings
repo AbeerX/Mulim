@@ -61,3 +61,8 @@
 "TopـProduct" = "Top Product";
 "weekly_summary" = "You added %d orders this week – %d%% more than last week.";
 "RevenueـComparisonـOverـTime"= "Revenue Comparison Over Time";
+
+"Notification_late_title" = "Update Order Status";
+"Notification_late_body" = "Order for %@ is still open. Please update the status if it has been delivered.";
+"Notification_today_title" = "Today's Orders";
+"Notification_today_body" = "You have %d orders scheduled for today.";
