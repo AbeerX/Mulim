@@ -7,8 +7,9 @@ struct Main: View {
     var products: [Product]
 
     @State private var navigateToDashboard = false
-
-    
+    @State private var showWhatsAppSheet = false
+     @State private var selectedCustomer: (name: String, number: String)? = nil
+     @State private var messageText: String = ""
     
     var currentOrders: [Order] {
         let today = Calendar.current.startOfDay(for: Date())
@@ -16,17 +17,74 @@ struct Main: View {
             .filter { $0.deliveryDate >= today && $0.selectedStatus == "Open" }
             .sorted { $0.deliveryDate < $1.deliveryDate }
     }
-    
+    var closedOrders: [Order] {
+        return orders.filter { $0.selectedStatus == "Closed" }
+    }
+
+ 
     
     // أفضل العملاء حسب الاكثر شراء --فقط الطلبات المقفلة نحسبها
-    var topCustomersBySpending: [(name: String, totalSpent: Double)] {
+    var topCustomersBySpending: [(name: String,number: String, totalSpent: Double)] {
         let grouped = Dictionary(grouping: orders.filter { $0.selectedStatus == "Closed" }, by: \.clientName)
 
         let spending = grouped.map { (name, orders) in
-            (name: name, totalSpent: orders.reduce(0) { $0 + $1.totalPrice })
+              let number = orders.first?.customerNumber ?? ""
+              let total = orders.reduce(0) { $0 + $1.totalPrice }
+              return (name: name, number: number, totalSpent: total)
         }
 
         return spending.sorted { $0.totalSpent > $1.totalSpent }.prefix(6).map { $0 }
+    }
+    func cleanedPhoneNumber(_ number: String) -> String {
+        // نحذف أي رموز أو مسافات ونخلي الرقم أرقام فقط
+        let digits = number.filter { "0123456789".contains($0) }
+
+        // إذا كان يبدأ بـ "05"، نغيره إلى "9665..."
+        if digits.hasPrefix("05") {
+            let index = digits.index(digits.startIndex, offsetBy: 1)
+            return "966" + digits[index...]
+        }
+
+        // إذا كان يبدأ بـ "5" مباشرة (بدون صفر)، نضيف 966
+        if digits.hasPrefix("5") && digits.count == 9 {
+            return "966" + digits
+        }
+
+        // إذا كان بصيغة دولية صحيحة، نرجعه كما هو
+        return digits
+    }
+    func normalizedPhoneNumber(_ number: String) -> String? {
+        // نشيل كل الرموز ونبقي الأرقام فقط
+        let digits = number.filter { "0123456789".contains($0) }
+
+        // إذا الرقم يبدأ بـ 00 نحوله لـ صيغة دولية
+        if digits.hasPrefix("00") {
+            return String(digits.dropFirst(2)) // تحذف الـ 00
+        }
+
+        // إذا يبدأ بـ 05 نحوله لـ 9665...
+        if digits.hasPrefix("05") {
+            let index = digits.index(digits.startIndex, offsetBy: 1)
+            return "966" + digits[index...]
+        }
+
+        // إذا يبدأ بـ 5 (بدون صفر) و 9 أرقام، نفس الشي نضيف 966
+        if digits.hasPrefix("5") && digits.count == 9 {
+            return "966" + digits
+        }
+
+        // إذا يبدأ بـ 966 و طوله صحيح
+        if digits.hasPrefix("966") && digits.count >= 11 {
+            return digits
+        }
+
+        // إذا رقم دولي عشوائي (مثلاً 971, 20 الخ...)
+        if digits.count >= 10 {
+            return digits
+        }
+
+        // غير معروف أو ناقص
+        return nil
     }
 
 
@@ -173,29 +231,155 @@ struct Main: View {
                             
                             HStack {
                                 ForEach(topCustomersBySpending, id: \.name) { customer in
-                                    VStack {
-                                        Image(systemName: "person.circle.fill")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 62, height: 65)
-                                            .foregroundColor(Color("C2"))
-                                        Text(customer.name)
-                                            .font(.system(size: 13))
-                                     
+                                    Button {
+                                        selectedCustomer = (customer.name, customer.number)
+                                        showWhatsAppSheet = true
+                                    } label:{
+                                        
+                                        VStack {
+                                            Image(systemName: "person.circle.fill")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 62, height: 65)
+                                                .foregroundColor(Color("C2"))
+                                            Text(customer.name)
+                                                .font(.system(size: 13)).foregroundStyle(Color.black).bold()
+                                            
+                                        }
+                                        .padding(.trailing, 14)
                                     }
-                                    .padding(.trailing, 14)
                                 }
                             }
                             .padding(.horizontal, 20)
-                        }}
+                        }.sheet(isPresented: $showWhatsAppSheet) {
+                            ScrollView {
+                                VStack(alignment: .leading, spacing: 16) {
+                                    if let customer = selectedCustomer {
+                                        Text("customer_info")
+                                            .font(.title2)
+                                            .fontWeight(.bold)
+
+                                        Text(String(format: NSLocalizedString("whats_sheet_name", comment: ""), customer.name))
+
+                                        Text(String(format: NSLocalizedString("whats_sheet_number", comment: ""), customer.number))
+
+                                        if let bestProduct = bestSellingProduct(for: customer.name) {
+                                            HStack {
+                                                Image(systemName: "star.fill")
+                                                    .foregroundColor(Color("C1"))
+
+                                                Text("Customer favourite product:")
+                                                    .font(.subheadline)
+                                                    .fontWeight(.semibold)
+                                                Text(bestProduct)
+                                                    .font(.subheadline)
+                                                    .padding(.horizontal, 6)
+                                                    .padding(.vertical, 2)
+                                                    .background(Color("C2"))
+                                                    .cornerRadius(5)
+                                            }
+                                        }
+
+                                        Divider()
+
+                                        Text("whats_sheet_previous")
+                                            .font(.headline)
+
+                                        let customerOrders = closedOrders.filter { $0.clientName == customer.name }
+
+                                        ForEach(customerOrders) { order in
+                                            VStack(alignment: .leading, spacing: 4) {
+                                                HStack {
+                                                    Text("📅 \(order.deliveryDate.formatted(date: .abbreviated, time: .omitted))")
+                                                        .font(.subheadline)
+                                                        .fontWeight(.medium)
+                                                    Spacer()
+                                                    switch order.selectedStatus {
+                                                    case "Canceled":
+                                                        statusButton(title: "Canceled", color: .yellow)
+                                                    case "Closed":
+                                                        statusButton(title: "Closed", color: .red)
+                                                    default:
+                                                        statusButton(title: "Open", color: .blue)
+                                                    }
+                                                }
+
+                                                ForEach(order.orderedProducts, id: \.name) { product in
+                                                    Text("• \(product.name) ×\(product.quantity)")
+                                                        .font(.footnote)
+                                                        .foregroundColor(.gray)
+                                                }
+                                            }
+                                            .padding(.vertical, 6)
+                                        }
+
+                                        if let phone = normalizedPhoneNumber(customer.number),
+                                           let url = URL(string: "https://wa.me/\(phone)")
+         {
+                                            Button {
+                                                UIApplication.shared.open(url)
+                                            } label: {
+                                                HStack {
+                                                    Text("whats_button")
+                                                    Image(systemName: "message.fill")
+                                                }
+                                                .frame(maxWidth: .infinity)
+                                                .padding()
+                                                .background(Color("C1"))
+                                                .foregroundColor(.white)
+                                                .cornerRadius(10)
+                                            }
+                                            .padding(.top)
+                                        }
+                                    }
+                                }
+                                .padding()
+                            }
+                            .presentationDetents([.fraction(0.60), .medium, .large])
+                        }
+                        
+                        
+                        
+                    }
 }
                 .onAppear {
                     orderManager.loadOrders(orders)
+                   
                 }
             }
         }
     }
+    func bestSellingProduct(for customerName: String) -> String? {
+        let customerOrders = closedOrders.filter {
+            $0.clientName == customerName
+        }
+
+        let allProducts = customerOrders.flatMap { $0.orderedProducts }
+
+        let productCounts = Dictionary(grouping: allProducts, by: { $0.name })
+            .mapValues { $0.reduce(0) { $0 + $1.quantity } }
+
+        return productCounts.max(by: { $0.value < $1.value })?.key
+    }
+
+
+    func statusButton(title: String, color: Color) -> some View {
+        Text(title)
+            .font(.system(size: 12))
+            .foregroundColor(.black)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+            .background(color.opacity(0.2))
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(color, lineWidth: 1)
+            )
+            .cornerRadius(8)
+    }
+
 }
+
+
 
 // MARK: - Components
 

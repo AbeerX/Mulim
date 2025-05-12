@@ -13,31 +13,41 @@ import UserNotifications
 struct mulimApp: App {
     @AppStorage("hasSeenOnboarding") var hasSeenOnboarding: Bool = false
     @AppStorage("hasCompletedFirstSetup") var hasCompletedFirstSetup: Bool = false
+    @State private var showSplash = true
    // @Query var ordersarray: [Order]
     @StateObject private var orderManager = OrderManager()
 
     var body: some Scene {
         WindowGroup {
-            
-            if !hasSeenOnboarding {
-                
-                Onbording()
-                    .environmentObject(orderManager)
-                    .preferredColorScheme(.light)
-            } else if !hasCompletedFirstSetup {
-                Products1stView {
-                    hasCompletedFirstSetup = true
-                }
-                .environmentObject(orderManager)
-                .preferredColorScheme(.light)
-            } else {
-                MainTabView()
-                    .environmentObject(orderManager)
-                    .preferredColorScheme(.light)
-                  
-            }
-        }
-        .modelContainer(for: [Product.self, Order.self])
+               if showSplash {
+                   Splash()
+                       .onAppear {
+                           // نخليها تظهر 3.5 ثانية مثل ما ضبطنا في Splash
+                           DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                               withAnimation {
+                                   showSplash = false
+                               }
+                           }
+                       }
+               } else {
+                   if !hasSeenOnboarding {
+                       Onbording()
+                           .environmentObject(orderManager)
+                           .preferredColorScheme(.light)
+                   } else if !hasCompletedFirstSetup {
+                       Products1stView {
+                           hasCompletedFirstSetup = true
+                       }
+                       .environmentObject(orderManager)
+                       .preferredColorScheme(.light)
+                   } else {
+                       MainTabView()
+                           .environmentObject(orderManager)
+                           .preferredColorScheme(.light)
+                   }
+               }
+           }
+           .modelContainer(for: [Product.self, Order.self])
 
 //        WindowGroup {
 //            if !hasSeenOnboarding {

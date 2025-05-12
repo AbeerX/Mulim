@@ -77,4 +77,11 @@
 "ThisـMonth'sـRevenue"= "This Month's Revenue";
 "CurrentـOrders" = "Current Orders";
 "Noـcurrentـordersـyet"= "No current orders yet.";
+"customer_info" = "Customer info";
+"whats_sheet_name" = "👤 Name: %@";
+"whats_sheet_number" = "📞 Phone number: %@";
+"whats_sheet_previous" = "Previous orders:";
+"whats_button" = "Send a WhatsApp Message";
+
+
 
