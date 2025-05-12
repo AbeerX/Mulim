@@ -83,8 +83,8 @@ struct DashboardView: View {
                 .padding(.vertical)
             }
             .navigationTitle(Text("Report")
-                .font(.custom("SF Pro", size: 22))
-                .fontWeight(.regular)
+//                .font(.custom("SF Pro", size: 22))
+//                .fontWeight(.regular)
             )
             .navigationBarTitleDisplayMode(.inline)
             

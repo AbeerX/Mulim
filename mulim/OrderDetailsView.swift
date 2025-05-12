@@ -17,24 +17,33 @@ struct OrderDetailsView: View {
             VStack(spacing: 0) {
                 HStack {
                     if isEditing {
-                        Button("Cancel") {
+                        Button("cancel_button") {
                             isEditing = false
                         }
                         .foregroundColor(.gray)
                     } else {
+//                        Button(action: { dismiss() }) {
+//                            HStack {
+//                                Image(systemName: "chevron.backward")
+//                                Text("Back")
+//                            }
+//                        }
+                         
+                        
+                        
                         Button(action: { dismiss() }) {
-                            HStack {
-                                Image(systemName: "chevron.backward")
-                                Text("Back")
-                            }
-                        }
-                        .foregroundColor(.blue)
-                    }
-
+                                                Image(systemName: "chevron.backward")
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(width: 21, height: 20)
+                                                    .foregroundColor(Color("C1"))
+                                            }
+                                        }
                     Spacer()
-
-                    Text("Order details")
-                        .font(.system(size: 18, weight: .medium))
+                    Text("Order_status")
+                   
+//                    Text("Order details")
+//                        .font(.system(size: 18, weight: .medium))
 
                     Spacer()
 
@@ -53,7 +62,8 @@ struct OrderDetailsView: View {
                         }
                     }) {
                         if isEditing {
-                            Text("Done").foregroundColor(.blue)
+                            Text("Done")
+                                .foregroundColor(.blue)
                         } else {
                             Image(systemName: "square.and.pencil")
                                 .resizable()
@@ -73,7 +83,7 @@ struct OrderDetailsView: View {
                                     showProductEditor = true
                                 } label: {
                                     HStack {
-                                        Text("Edit Products")
+                                        Text("Edit_Products")
                                         Spacer()
                                         Image(systemName: "chevron.right")
                                     }
@@ -103,23 +113,31 @@ struct OrderDetailsView: View {
                         }
 
                         groupedBox {
-                            fieldRow(title: "Client name:", value: order.clientName, editable: true, binding: $order.clientName)
+                            fieldRow(title: "Client_name:", value: order.clientName, editable: true, binding: $order.clientName)
                             Divider().padding(.horizontal, 10)
-                            phoneRow(title: "Customer number:", text: $order.customerNumber)
+                            phoneRow(title: "Customer_number:", text: $order.customerNumber)
                         }
 
                         groupedBox {
-                            deliveryDateRow(title: "Delivery time:", date: $order.deliveryDate)
-                            Divider().padding(.horizontal, 10)
-                            HStack {
-                                Text("Order status:")
+                            deliveryDateRow(title: "Delivery_time:", date: $order.deliveryDate)
+                            Divider()
+                                .padding(.horizontal, 10)
+                           
+                    
+                            HStack /*(alignment, .trailing, spacing: 20)*/{
+                                Text("Order_status:")
                                     .font(.system(size: 18))
+//                                    .padding(.trailing, 13) // ← المسافة المطلوبة بين النص والأزرار
 
                                 statusButton(title: "Canceled", color: .yellow)
                                 statusButton(title: "Open", color: .blue)
                                 statusButton(title: "Closed", color: .red)
                             }
-                            .padding()
+                            .padding(.top, 16)
+                            .padding(.leading, 13)
+                            .padding(.bottom, 13)
+
+
                         }
 
                         groupedBox {
