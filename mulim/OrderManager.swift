@@ -1,5 +1,5 @@
 import Foundation
-
+import SwiftData
 class OrderManager: ObservableObject {
     @Published var orders: [Order] = [] // ✅ ليست Optional
 
@@ -75,4 +75,15 @@ class OrderManager: ObservableObject {
             return DailyRevenue(day: month, revenue: total)
         }
     }
+    func fetchOrders(context: ModelContext) {
+        do {
+            let descriptor = FetchDescriptor<Order>()
+            orders = try context.fetch(descriptor)
+            print("✅ Orders fetched in OrderManager: \(orders.count)")
+        } catch {
+            print("❌ Failed to fetch orders: \(error.localizedDescription)")
+        }
+    }
 }
+
+
