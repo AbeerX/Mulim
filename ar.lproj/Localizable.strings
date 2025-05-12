@@ -21,6 +21,9 @@
 
 
 "Products" = "منتجات";
+"Products:" = "منتجات";
+
+
 "Add_New_Product" = "اضف منتج جديد";
 "Delete" = "حذف";
 "Edit" = "تعديل";
@@ -30,6 +33,7 @@
 "Totalـprice" = "السعر الإجمالي";
 "Customer_name:" = "اسم العميل:";
 "Customerـphoneـnumber:" = "رقم هاتف العميل";
+"Customer_number:" = "رقم الجوال";
 "prodect" = "منتج";
 "prodect:" = "المنتجات";
 "Note :" = "الملاحظات";
@@ -38,6 +42,7 @@
 "open" = "مفتوح";
 "Closed" = "مغلق";
 "Order_status:" = "حالة الطلب";
+"Order_status"= "حالة الطلب";
 "Order_details" = "تفاصيل الطلب";
 "ProductـType:" = " نوع الطلب";
 "Previous_order" = "الطلبات السابقة";

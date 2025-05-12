@@ -19,6 +19,9 @@
 "empty_list_text" = "Enter your products with prices to make it easier to manage your products and track your income.";
 
 "Products" = "Products";
+"Products:" = "Products:";
+
+
 "Edit" = "Edit";
 "Delete" = "Delete";
 "Orders" = "Orders";
@@ -27,6 +30,7 @@
 "Totalـprice" = "Total price";
 "Customer_name:" = "Customer name :";
 "Customerـphoneـnumber:" = "Customer phone number :";
+"Customer_number:" = "Customer_number:";
 "prodect:" = "prodect :";
 "prodect" = "prodect";
 "Note:" = "Note :";
@@ -35,6 +39,7 @@
 "open" = "open";
 "Closed" = "Closed";
 "Order_status:" = "Order status:";
+"Order_status" = "Order_status:";
 "Order_details" = "Order details";
 "ProductـType:" = "Product Type:";
 "Previous_requests" = "Previous requests";
