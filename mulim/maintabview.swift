@@ -56,7 +56,7 @@ struct MainTabView: View {
         TabView {
             // تبويب الصفحة الرئيسية
             NavigationStack {
-                Main(orderManager: orderManager, orders: orders)
+                Main(orderManager: orderManager, orders: orders, products: products)
             }
             .tabItem {
                 Image("Mulimiconbold")

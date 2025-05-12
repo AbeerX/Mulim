@@ -11,6 +11,7 @@ struct NewOrder: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query var products: [Product]
+    @Query var existingOrders: [Order] // ✅ لإيجاد العميل بناءً على الرقم
 
     @State private var clientName = ""
     @State private var customerNumber = ""
@@ -49,6 +50,12 @@ struct NewOrder: View {
                             TextField("Enter Customer Phone", text: $customerNumber)
                                 .font(.subheadline)
                                 .padding(10)
+                                .onChange(of: customerNumber) { newValue in
+                                    // ✅ تعبئة الاسم تلقائيًا عند تطابق الرقم
+                                    if let existingOrder = existingOrders.first(where: { $0.customerNumber == newValue }) {
+                                        clientName = existingOrder.clientName
+                                    }
+                                }
 
                             Button(action: {
                                 showContactPicker = true
