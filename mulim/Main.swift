@@ -1,3 +1,4 @@
+
 import SwiftUI
 import SwiftData
 
@@ -10,6 +11,7 @@ struct Main: View {
     @State private var showWhatsAppSheet = false
      @State private var selectedCustomer: (name: String, number: String)? = nil
      @State private var messageText: String = ""
+    @State private var selectedTab: String = "Current"
     
     var currentOrders: [Order] {
         let today = Calendar.current.startOfDay(for: Date())
@@ -153,7 +155,7 @@ struct Main: View {
                         
                         Spacer()
                         
-                        NavigationLink(destination: OrdersView()) {
+                        NavigationLink(destination: OrdersView(selectedTab: $selectedTab)) {
                             Text("SeeـAll")
                                 .fontWeight(.bold)
                                 .font(.system(size: 12))
@@ -188,7 +190,7 @@ struct Main: View {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack {
                                 ForEach(currentOrders.prefix(4)) { order in
-                                    NavigationLink(destination: OrderDetailsView(order: order, products: products)) {
+                                    NavigationLink(destination: OrderDetailsView(order: order, products: products, selectedTab: $selectedTab)) {
                                         OrderCard(order: order)
                                     }
                                 }

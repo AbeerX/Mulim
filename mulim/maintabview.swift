@@ -52,6 +52,8 @@ struct MainTabView: View {
     @EnvironmentObject var orderManager: OrderManager
     @Environment(\.modelContext) private var modelContext
 
+    @State private var selectedTab: String = "Current" // ✅ مضاف لدعم التنقل بين التبويبات
+
     var body: some View {
         TabView {
             // تبويب الصفحة الرئيسية
@@ -61,15 +63,15 @@ struct MainTabView: View {
             .tabItem {
                 Image("Mulimiconbold")
                     .renderingMode(.template)
-                    .resizable().frame(width: 24, height: 24).offset(x: 20)
-                  
+                    .resizable()
+                    .frame(width: 24, height: 24)
+                    .offset(x: 20)
                 Text("Main")
-
             }
 
             // تبويب الطلبات
             NavigationStack {
-                OrdersView()
+                OrdersView(selectedTab: $selectedTab) // ✅ تم تمرير selectedTab
             }
             .tabItem {
                 Image(systemName: "cart.fill.badge.plus")
@@ -86,14 +88,12 @@ struct MainTabView: View {
             }
         }
         .onAppear {
-              orderManager.fetchOrders(context: modelContext)
-              requestNotificationPermission()
-              DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                  scheduleOrderNotifications(orders: orderManager.orders)
-              }
-          }
+            orderManager.fetchOrders(context: modelContext)
+            requestNotificationPermission()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                scheduleOrderNotifications(orders: orderManager.orders)
+            }
+        }
         .accentColor(Color("C1")) // تأكدي من وجود هذا اللون في Assets
     }
 }
-
-

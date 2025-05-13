@@ -4,12 +4,14 @@ import SwiftData
 struct OrderDetailsView: View {
     @Bindable var order: Order
     var products: [Product]
+    @Binding var selectedTab: String
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
+
     @State private var isEditing = false
     @State private var showContactPicker = false
     @State private var showProductEditor = false
-
     @State private var selectedProducts: [SelectedProduct] = []
 
     var body: some View {
@@ -17,52 +19,49 @@ struct OrderDetailsView: View {
             VStack(spacing: 0) {
                 HStack {
                     if isEditing {
-                        Button("cancel_button") {
+                        Button("Cancel") {
                             isEditing = false
                         }
                         .foregroundColor(.gray)
                     } else {
-//                        Button(action: { dismiss() }) {
-//                            HStack {
-//                                Image(systemName: "chevron.backward")
-//                                Text("Back")
-//                            }
-//                        }
-                         
-                        
-                        
                         Button(action: { dismiss() }) {
-                                                Image(systemName: "chevron.backward")
-                                                    .resizable()
-                                                    .scaledToFit()
-                                                    .frame(width: 21, height: 20)
-                                                    .foregroundColor(Color("C1"))
-                                            }
-                                        }
-                    Spacer()
-                    Text("Order_details")
-                   
-//                    Text("Order details")
-//                        .font(.system(size: 18, weight: .medium))
+                            Image(systemName: "chevron.backward")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 21, height: 20)
+                                .foregroundColor(Color("C1"))
+                        }
+                    }
 
+                    Spacer()
+                    Text("Order Details")
                     Spacer()
 
                     Button(action: {
                         if isEditing {
-                            order.orderedProducts = selectedProducts.map {
-                                OrderedProduct(
-                                    name: $0.product.productName,
-                                    quantity: $0.quantity,
-                                    price: $0.product.productPrice
-                                )
+                            if !selectedProducts.isEmpty {
+                                order.orderedProducts = selectedProducts.map {
+                                    OrderedProduct(
+                                        name: $0.product.productName,
+                                        quantity: $0.quantity,
+                                        price: $0.product.productPrice
+                                    )
+                                }
                             }
+
+                            try? context.save()
+
+                            if order.selectedStatus == "Closed" || order.selectedStatus == "Canceled" {
+                                selectedTab = "Previous"
+                            }
+
                             isEditing = false
                         } else {
                             isEditing = true
                         }
                     }) {
                         if isEditing {
-                            Text("done_button")
+                            Text("Done")
                                 .foregroundColor(.blue)
                         } else {
                             Image(systemName: "square.and.pencil")
@@ -83,7 +82,7 @@ struct OrderDetailsView: View {
                                     showProductEditor = true
                                 } label: {
                                     HStack {
-                                        Text("Edit_Products")
+                                        Text("Edit Products")
                                         Spacer()
                                         Image(systemName: "chevron.right")
                                     }
@@ -106,41 +105,30 @@ struct OrderDetailsView: View {
 
                             fieldRow(
                                 title: "Total:",
-                                value: String(format: "%.2f SR", order.orderedProducts.reduce(0) {
-                                    $0 + ($1.price * Double($1.quantity))
-                                })
+                                value: String(format: "%.2f SR", order.totalPrice)
                             )
                         }
 
                         groupedBox {
-                            fieldRow(title: "Customer_name:", value: order.clientName, editable: true, binding: $order.clientName)
+                            fieldRow(title: "Customer Name:", value: order.clientName, editable: true, binding: $order.clientName)
                             Divider().padding(.horizontal, 10)
-                            phoneRow(title: "Customer_number:", text: $order.customerNumber)
+                            phoneRow(title: "Customer Number:", text: $order.customerNumber)
                         }
 
                         groupedBox {
-                            deliveryDateRow(title: "Delivery_time:", date: $order.deliveryDate)
-                            Divider()
-                                .padding(.horizontal, 10)
-                           
-                    
-                            HStack {
-                                Text("Order_status:")
-                                    .font(.system(size: 18))
-//                                    .padding(.trailing, 13) // ← المسافة المطلوبة بين النص والأزرار
-                                statusButton(title: NSLocalizedString("Canceled", comment: ""), color: .yellow)
-                                statusButton(title: NSLocalizedString("Open", comment: ""), color: .blue)
-                                statusButton(title: NSLocalizedString("Closed", comment: ""), color: .red)
+                            deliveryDateRow(title: "Delivery Time:", date: $order.deliveryDate)
+                            Divider().padding(.horizontal, 10)
 
-//                                statusButton(title: "Canceled", color: .yellow)
-//                                statusButton(title: "Open", color: .blue)
-//                                statusButton(title: "Closed", color: .red)
+                            HStack {
+                                Text("Order Status:")
+                                    .font(.system(size: 18))
+                                statusButton(title: "Canceled", color: .yellow)
+                                statusButton(title: "Open", color: .blue)
+                                statusButton(title: "Closed", color: .red)
                             }
                             .padding(.top, 16)
                             .padding(.leading, 13)
                             .padding(.bottom, 13)
-
-
                         }
 
                         groupedBox {
@@ -155,15 +143,10 @@ struct OrderDetailsView: View {
             .navigationBarBackButtonHidden(true)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-
-            // Contact Picker
             .sheet(isPresented: $showContactPicker) {
                 ContactPicker(selectedPhoneNumber: $order.customerNumber)
             }
-
-            // Product Selection Sheet
             .sheet(isPresented: $showProductEditor, onDismiss: {
-                // تحديث المنتجات داخل الطلب بعد التعديل
                 if isEditing {
                     order.orderedProducts = selectedProducts.map {
                         OrderedProduct(
@@ -180,22 +163,19 @@ struct OrderDetailsView: View {
                     selectedProducts: $selectedProducts
                 )
             }
-
-            // تحديث الكميات عند كل مرة يتم فتح الشيت
             .onChange(of: showProductEditor) { newValue in
                 if newValue == true {
-                    selectedProducts = order.orderedProducts.map {
-                        SelectedProduct(
-                            product: Product(productName: $0.name, productPrice: $0.price),
-                            quantity: $0.quantity
-                        )
+                    selectedProducts = order.orderedProducts.compactMap { item in
+                        if let matched = products.first(where: { $0.productName == item.name }) {
+                            return SelectedProduct(product: matched, quantity: item.quantity)
+                        }
+                        return nil
                     }
                 }
             }
+           
         }
     }
-
-    // MARK: - UI Components
 
     private func groupedBox<Content: View>(@ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -211,7 +191,7 @@ struct OrderDetailsView: View {
 
     private func fieldRow(title: String, value: String, editable: Bool = false, binding: Binding<String>? = nil) -> some View {
         HStack {
-            Text(LocalizedStringKey(title))
+            Text(title)
                 .font(.system(size: 18))
 
             if editable, let binding = binding, isEditing {
@@ -232,7 +212,7 @@ struct OrderDetailsView: View {
 
     private func phoneRow(title: String, text: Binding<String>) -> some View {
         HStack {
-            Text(LocalizedStringKey(title))
+            Text(title)
                 .font(.system(size: 18))
 
             if isEditing {
@@ -260,7 +240,7 @@ struct OrderDetailsView: View {
 
     private func deliveryDateRow(title: String, date: Binding<Date>) -> some View {
         HStack {
-            Text(LocalizedStringKey(title))
+            Text(title)
                 .font(.system(size: 18))
 
             if isEditing {
@@ -281,7 +261,7 @@ struct OrderDetailsView: View {
 
     private func noteRow(title: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(LocalizedStringKey(title))
+            Text(title)
                 .font(.system(size: 18))
 
             if isEditing {
@@ -294,9 +274,7 @@ struct OrderDetailsView: View {
                             .stroke(Color(hex: "#00BCD4"), lineWidth: 1)
                     )
             } else {
-//                Text(text.wrappedValue.isEmpty ? "Noـnote" : text.wrappedValue)
-                Text(text.wrappedValue.isEmpty ? LocalizedStringKey("No_note") : LocalizedStringKey(text.wrappedValue))
-
+                Text(text.wrappedValue.isEmpty ? "No note" : text.wrappedValue)
                     .font(.system(size: 16))
                     .foregroundColor(.gray)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -354,5 +332,12 @@ extension Color {
         ]
     )
 
-    return OrderDetailsView(order: order, products: [])
+    return OrderDetailsView(
+        order: order,
+        products: [
+            Product(productName: "Test Cake", productPrice: 25.0)
+        ],
+        selectedTab: .constant("Current")
+    )
+    .modelContainer(for: [Order.self, Product.self])
 }

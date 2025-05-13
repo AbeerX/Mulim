@@ -59,9 +59,10 @@ class SpeechRecognizer: ObservableObject {
 
 // ✅ الصفحة الرئيسية
 struct OrdersView: View {
+    @Binding var selectedTab: String // ✅ مضاف هنا
+
     @Query var orders: [Order]
     @Query var products: [Product]
-    @State private var selectedTab: String = "Current"
     @State private var searchText: String = ""
     @State private var isRecording = false
 
@@ -141,7 +142,6 @@ struct OrdersView: View {
                     .frame(height: 1)
                     .foregroundColor(Color.gray.opacity(0.3))
 
-                // التحديث التلقائي لحقل البحث
                 .onChange(of: speechRecognizer.recognizedText) { newValue in
                     searchText = newValue
                 }
@@ -151,9 +151,15 @@ struct OrdersView: View {
 
                 // تصفية الطلبات
                 let filteredOrders = orders.filter { order in
-                    let matchesTab = selectedTab == "Current"
-                        ? order.selectedStatus == "Open"
-                        : (order.selectedStatus == "Closed" || order.selectedStatus == "Canceled")
+                    let rawStatus = order.selectedStatus.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let matchesTab: Bool
+
+                    if selectedTab == "Current" {
+                        matchesTab = rawStatus.compare("Open", options: .caseInsensitive) == .orderedSame
+                    } else {
+                        matchesTab = rawStatus.compare("Closed", options: .caseInsensitive) == .orderedSame ||
+                                     rawStatus.compare("Canceled", options: .caseInsensitive) == .orderedSame
+                    }
 
                     let matchesSearch = searchText.isEmpty ||
                         order.clientName.localizedCaseInsensitiveContains(searchText) ||
@@ -173,7 +179,7 @@ struct OrdersView: View {
                     ScrollView {
                         VStack(spacing: 12) {
                             ForEach(filteredOrders) { order in
-                                NavigationLink(destination: OrderDetailsView(order: order, products: products)) {
+                                NavigationLink(destination: OrderDetailsView(order: order, products: products, selectedTab: $selectedTab)) {
                                     orderSummaryView(order)
                                 }
                             }
@@ -231,7 +237,6 @@ struct OrdersView: View {
         )
     }
 
-    // ✅ حالة الطلب
     func statusBadge(for status: String) -> some View {
         let color: Color = switch status {
         case "Canceled": Color(hex: "#FFC835")
@@ -257,6 +262,6 @@ struct OrdersView: View {
 }
 
 #Preview {
-    OrdersView()
-        .modelContainer(for: [Order.self])
+    OrdersView(selectedTab: .constant("Current"))
+        .modelContainer(for: [Order.self, Product.self])
 }
