@@ -349,7 +349,7 @@ struct Main: View {
                    
                 }
             }
-        }
+        }.navigationBarBackButtonHidden(true)
     }
     func bestSellingProduct(for customerName: String) -> String? {
         let customerOrders = closedOrders.filter {
