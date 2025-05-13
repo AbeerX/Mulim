@@ -19,7 +19,7 @@ struct OrderDetailsView: View {
             VStack(spacing: 0) {
                 HStack {
                     if isEditing {
-                        Button("Cancel") {
+                        Button("cancel_button") {
                             isEditing = false
                         }
                         .foregroundColor(.gray)
@@ -34,7 +34,7 @@ struct OrderDetailsView: View {
                     }
 
                     Spacer()
-                    Text("Order Details")
+                    Text("Order_details")
                     Spacer()
 
                     Button(action: {
@@ -61,7 +61,7 @@ struct OrderDetailsView: View {
                         }
                     }) {
                         if isEditing {
-                            Text("Done")
+                            Text("done_button")
                                 .foregroundColor(.blue)
                         } else {
                             Image(systemName: "square.and.pencil")
@@ -82,7 +82,7 @@ struct OrderDetailsView: View {
                                     showProductEditor = true
                                 } label: {
                                     HStack {
-                                        Text("Edit Products")
+                                        Text("Edit_Products")
                                         Spacer()
                                         Image(systemName: "chevron.right")
                                     }
@@ -104,27 +104,51 @@ struct OrderDetailsView: View {
                             Divider().padding(.horizontal, 10)
 
                             fieldRow(
-                                title: "Total:",
+                                title: NSLocalizedString("Total:", comment: ""),
                                 value: String(format: "%.2f SR", order.totalPrice)
                             )
                         }
 
                         groupedBox {
-                            fieldRow(title: "Customer Name:", value: order.clientName, editable: true, binding: $order.clientName)
-                            Divider().padding(.horizontal, 10)
-                            phoneRow(title: "Customer Number:", text: $order.customerNumber)
+                            //                            fieldRow(title: NSLocalizedString("Customer_Name:", comment: ""), value: order.clientName, editable: true, binding: $order.clientName)
+                            fieldRow(
+                                title: NSLocalizedString("Customer_name:", comment: ""),
+                                value: order.clientName,
+                                editable: true,
+                                binding: $order.clientName
+                            )
+                            
+                            //                            fieldRow(title: "Customer_Name:", value: order.clientName, editable: true, binding: $order.clientName)
+                            Divider()
+                                .padding(.horizontal, 10)
+                            
+                            //                            phoneRow(title: "Customer_number:", text: $order.customerNumber)
+                            
+                            phoneRow(
+                                title: NSLocalizedString("Customer_number:", comment: ""),
+                                text: $order.customerNumber
+                            )
                         }
+                       
 
                         groupedBox {
-                            deliveryDateRow(title: "Delivery Time:", date: $order.deliveryDate)
-                            Divider().padding(.horizontal, 10)
+                            
+                            deliveryDateRow(
+                                title: NSLocalizedString("Delivery_time:", comment: ""),
+                                date: $order.deliveryDate
+                            )
+                            Divider()
+                            .padding(.horizontal, 10)
 
                             HStack {
-                                Text("Order Status:")
-                                    .font(.system(size: 18))
-                                statusButton(title: "Canceled", color: .yellow)
-                                statusButton(title: "Open", color: .blue)
-                                statusButton(title: "Closed", color: .red)
+                                Text(LocalizedStringKey("Order_status:"))
+                                 .font(.system(size: 18))
+                                statusButton(title: NSLocalizedString("Canceled", comment: ""), color: .yellow)
+                                        statusButton(title: NSLocalizedString("Open", comment: ""), color: .blue)
+                                        statusButton(title: NSLocalizedString("Closed", comment: ""), color: .red)
+//                                statusButton(title: "Canceled", color: .yellow)
+//                                statusButton(title: "Open", color: .blue)
+//                                statusButton(title: "Closed", color: .red)
                             }
                             .padding(.top, 16)
                             .padding(.leading, 13)
@@ -132,7 +156,10 @@ struct OrderDetailsView: View {
                         }
 
                         groupedBox {
-                            noteRow(title: "Note:", text: $order.note)
+                            noteRow(
+                                title: NSLocalizedString("Note:", comment: ""),
+                                text: $order.note
+                            )
                         }
 
                         Spacer()
@@ -274,7 +301,9 @@ struct OrderDetailsView: View {
                             .stroke(Color(hex: "#00BCD4"), lineWidth: 1)
                     )
             } else {
-                Text(text.wrappedValue.isEmpty ? "No note" : text.wrappedValue)
+                Text(text.wrappedValue.isEmpty ? NSLocalizedString("No_note", comment: "") : text.wrappedValue)
+
+//                Text(text.wrappedValue.isEmpty ? "No note" : text.wrappedValue)
                     .font(.system(size: 16))
                     .foregroundColor(.gray)
                     .frame(maxWidth: .infinity, alignment: .leading)
