@@ -12,7 +12,11 @@ struct Main: View {
      @State private var selectedCustomer: (name: String, number: String)? = nil
      @State private var messageText: String = ""
     @State private var selectedTab: String = "Current"
-    
+    @State private var selectedCustomerOrders: [Order] = []
+    @State private var selectedCustomerBestProduct: String? = nil
+    @State private var isPreparingCustomerSheet = false
+    @State private var shouldPresentSheet = false
+
     var currentOrders: [Order] {
         let today = Calendar.current.startOfDay(for: Date())
         return orders
@@ -97,6 +101,15 @@ struct Main: View {
         let weekEnd = calendar.date(byAdding: .day, value: 7, to: weekStart) ?? now
         let weekOrders = orders.filter { $0.deliveryDate >= weekStart && $0.deliveryDate < weekEnd }
         return weekOrders.reduce(0) { $0 + $1.totalPrice }
+    }
+    func prepareCustomerSheet(for customer: (name: String, number: String)) {
+        selectedCustomer = customer
+        selectedCustomerOrders = closedOrders.filter { $0.clientName == customer.name }
+        selectedCustomerBestProduct = bestSellingProduct(from: selectedCustomerOrders)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            showWhatsAppSheet = true
+        }
     }
 
     var body: some View {
@@ -200,7 +213,7 @@ struct Main: View {
                     }
 
                     
-                    Text("Top Customers")
+                    Text("top_customers")
                         .font(.system(size: 12))
                         .fontWeight(.bold)
                         .padding(.horizontal,20)
@@ -234,8 +247,25 @@ struct Main: View {
                             HStack {
                                 ForEach(topCustomersBySpending, id: \.name) { customer in
                                     Button {
+                                        print("✅ زر العميل تم الضغط عليه: \(customer.name)")
+                                        isPreparingCustomerSheet = true
                                         selectedCustomer = (customer.name, customer.number)
-                                        showWhatsAppSheet = true
+
+                                        DispatchQueue.main.async {
+                                            
+                                            let orders = closedOrders.filter { $0.clientName == customer.name }
+                                            selectedCustomerOrders = orders
+                                            selectedCustomerBestProduct = bestSellingProduct(from: orders)
+                                            print("✅ عدد الطلبات المغلقة لهذا العميل: \(orders.count)")
+                                            
+                                            // بعد تجهيز البيانات، فعّل عرض الشيت
+                                            isPreparingCustomerSheet = false
+                                            shouldPresentSheet = true
+                                            
+                                            print("✅ تم تفعيل shouldPresentSheet: \(shouldPresentSheet)")
+
+                                            
+                                        }
                                     } label:{
                                         
                                         VStack {
@@ -253,24 +283,34 @@ struct Main: View {
                                 }
                             }
                             .padding(.horizontal, 20)
-                        }.sheet(isPresented: $showWhatsAppSheet) {
+                        }.sheet(isPresented: Binding(
+                            get: { shouldPresentSheet },
+                            set: { shouldPresentSheet = $0 }
+                        )) {
                             ScrollView {
                                 VStack(alignment: .leading, spacing: 16) {
-                                    if let customer = selectedCustomer {
+                                    if isPreparingCustomerSheet {
+                                        ProgressView("Loading...")
+                                            .padding()
+                                    }
+                                    
+                                    else if let customer =  selectedCustomer {
+                                        
                                         Text("customer_info")
                                             .font(.title2)
                                             .fontWeight(.bold)
-
+                                        
                                         Text(String(format: NSLocalizedString("whats_sheet_name", comment: ""), customer.name))
+                                        
+                                        Text(String(format: NSLocalizedString("whats_sheet_number", comment: ""), "\u{202A}\(customer.number)"))
 
-                                        Text(String(format: NSLocalizedString("whats_sheet_number", comment: ""), customer.number))
-
-                                        if let bestProduct = bestSellingProduct(for: customer.name) {
+                                        
+                                        if let bestProduct = selectedCustomerBestProduct {
                                             HStack {
                                                 Image(systemName: "star.fill")
                                                     .foregroundColor(Color("C1"))
-
-                                                Text("Customer favourite product:")
+                                                
+                                                Text("customer_favourite_product")
                                                     .font(.subheadline)
                                                     .fontWeight(.semibold)
                                                 Text(bestProduct)
@@ -281,15 +321,15 @@ struct Main: View {
                                                     .cornerRadius(5)
                                             }
                                         }
-
+                                        
                                         Divider()
-
+                                        
                                         Text("whats_sheet_previous")
                                             .font(.headline)
-
-                                        let customerOrders = closedOrders.filter { $0.clientName == customer.name }
-
-                                        ForEach(customerOrders) { order in
+                                        
+                                        
+                                        
+                                        ForEach(selectedCustomerOrders) { order in
                                             VStack(alignment: .leading, spacing: 4) {
                                                 HStack {
                                                     Text("📅 \(order.deliveryDate.formatted(date: .abbreviated, time: .omitted))")
@@ -298,14 +338,14 @@ struct Main: View {
                                                     Spacer()
                                                     switch order.selectedStatus {
                                                     case "Canceled":
-                                                        statusButton(title: "Canceled", color: .yellow)
+                                                        statusButton(title: "status_canceled", color: .yellow)
                                                     case "Closed":
-                                                        statusButton(title: "Closed", color: .red)
+                                                        statusButton(title: "status_closed", color: .red)
                                                     default:
-                                                        statusButton(title: "Open", color: .blue)
+                                                        statusButton(title: "status_open", color: .blue)
                                                     }
                                                 }
-
+                                                
                                                 ForEach(order.orderedProducts, id: \.name) { product in
                                                     Text("• \(product.name) ×\(product.quantity)")
                                                         .font(.footnote)
@@ -314,10 +354,11 @@ struct Main: View {
                                             }
                                             .padding(.vertical, 6)
                                         }
-
+                                        Spacer().frame(height: 30)
                                         if let phone = normalizedPhoneNumber(customer.number),
                                            let url = URL(string: "https://wa.me/\(phone)")
-         {
+                                        {
+                                           
                                             Button {
                                                 UIApplication.shared.open(url)
                                             } label: {
@@ -334,10 +375,12 @@ struct Main: View {
                                             .padding(.top)
                                         }
                                     }
+                                
+
                                 }
                                 .padding()
                             }
-                            .presentationDetents([.fraction(0.60), .medium, .large])
+                           
                         }
                         
                         
@@ -351,12 +394,8 @@ struct Main: View {
             }
         }.navigationBarBackButtonHidden(true)
     }
-    func bestSellingProduct(for customerName: String) -> String? {
-        let customerOrders = closedOrders.filter {
-            $0.clientName == customerName
-        }
-
-        let allProducts = customerOrders.flatMap { $0.orderedProducts }
+    func bestSellingProduct(from orders: [Order]) -> String? {
+        let allProducts = orders.flatMap { $0.orderedProducts }
 
         let productCounts = Dictionary(grouping: allProducts, by: { $0.name })
             .mapValues { $0.reduce(0) { $0 + $1.quantity } }
@@ -365,7 +404,9 @@ struct Main: View {
     }
 
 
-    func statusButton(title: String, color: Color) -> some View {
+
+    func statusButton(title: LocalizedStringKey, color: Color) -> some View {
+      
         Text(title)
             .font(.system(size: 12))
             .foregroundColor(.black)

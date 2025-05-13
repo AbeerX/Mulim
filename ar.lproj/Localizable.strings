@@ -86,3 +86,8 @@
 "whats_sheet_number" = "📞 رقم الجوال:%@";
 "whats_sheet_previous" = "الطلبات السابقة";
 "whats_button" = "إرسال رسالة على الواتس اب";
+"status_closed" = "مغلق";
+"status_open" = "مفتوح";
+"status_canceled" = "ملغي";
+"customer_favourite_product" = "أفضل منتج للعميل:";
+"top_customers" = "أفضل العملاء" ;

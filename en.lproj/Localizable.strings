@@ -82,6 +82,11 @@
 "whats_sheet_number" = "📞 Phone number: %@";
 "whats_sheet_previous" = "Previous orders:";
 "whats_button" = "Send a WhatsApp Message";
+"status_closed" = "Closed";
+"status_open" = "Open";
+"status_canceled" = "Canceled";
+"customer_favourite_product" = "Customer favourite product:";
+"top_customers" = "Top Customers";
 
 
 
