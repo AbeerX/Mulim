@@ -23,10 +23,13 @@ struct Onbording: View {
             VStack {
                 HStack {
                     Spacer()
-                    Text("skip_button")
-                        .foregroundColor(Color("C1"))
-                        .font(.system(size: 18, weight: .bold))
-                        .padding()
+                    NavigationLink(destination: Main(orderManager: OrderManager(), orders: [], products: [])) {
+                        Text("skip_button")
+                            .foregroundColor(Color("C1"))
+                            .font(.system(size: 18, weight: .bold))
+                            .padding()
+                    }
+
                 }
                 
                 TabView {
