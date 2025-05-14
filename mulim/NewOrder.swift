@@ -178,6 +178,9 @@ struct NewOrder: View {
         }
         .navigationTitle("New order")
         .navigationBarTitleDisplayMode(.inline)
+   
+        .toolbar(.hidden, for: .tabBar)
+
     }
 
     func saveOrder() {

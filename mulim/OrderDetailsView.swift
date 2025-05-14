@@ -34,7 +34,13 @@ struct OrderDetailsView: View {
                     }
 
                     Spacer()
-                    Text("Order_details")
+                    VStack(spacing: 1) {
+                        Text("Order_details")
+                        Text("#\(order.id.uuidString.prefix(8))")
+                            .font(.system(size: 13))
+                            .foregroundColor(.gray)
+                    }
+//                    Text("Order_details")
                     Spacer()
 
                     Button(action: {
@@ -126,6 +132,8 @@ struct OrderDetailsView: View {
                             
                             phoneRow(
                                 title: NSLocalizedString("Customer_number:", comment: ""),
+
+//                                title: NSLocalizedString("Customer_number:", comment: ""),
                                 text: $order.customerNumber
                             )
                         }
@@ -200,8 +208,11 @@ struct OrderDetailsView: View {
                     }
                 }
             }
+            
            
         }
+        .toolbar(.hidden, for: .tabBar)
+
     }
 
     private func groupedBox<Content: View>(@ViewBuilder content: () -> Content) -> some View {

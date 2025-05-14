@@ -99,7 +99,10 @@ struct DashboardView: View {
                     }
                 }
             }
+            
         }
+        .toolbar(.hidden, for: .tabBar)
+
     }
 
     // MARK: - Dashboard Card With Icon Support
