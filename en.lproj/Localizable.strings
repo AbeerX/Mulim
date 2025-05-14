@@ -87,6 +87,9 @@
 "status_canceled" = "Canceled";
 "customer_favourite_product" = "Customer favourite product:";
 "top_customers" = "Top Customers";
+"Ordersـwillـshowـupـonceـreceived." = "Orders will show up once received.";
+"Noـcustomerـdataـyet." = "No customer data yet.";
+"Onceـordersـareـcompleted, topـcustomersـwillـappearـhere." = "Once orders are completed, top customers will appear here.";
 
 
 

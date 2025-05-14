@@ -91,3 +91,8 @@
 "status_canceled" = "ملغي";
 "customer_favourite_product" = "أفضل منتج للعميل:";
 "top_customers" = "أفضل العملاء" ;
+"Ordersـwillـshowـupـonceـreceived." = "ستظهر الطلبات بمجرد استلامها.";
+"Noـcustomerـdataـyet." = "لا توجد بيانات عملاء حتى الآن.";
+"Onceـordersـareـcompleted, topـcustomersـwillـappearـhere." = "بمجرد إكمال الطلبات، سيظهر أفضل العملاء هنا.";
+
+

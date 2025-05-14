@@ -193,7 +193,7 @@ struct Main: View {
                                 .font(.callout)
                                 .foregroundColor(.gray)
 
-                            Text("Orders will show up once received.")
+                            Text("Ordersـwillـshowـupـonceـreceived.")
                                 .font(.caption)
                                 .foregroundColor(.gray.opacity(0.6))
                         }
@@ -230,11 +230,11 @@ struct Main: View {
                                     .foregroundColor(Color("C2"))
                             }
 
-                            Text("No customer data yet.")
+                            Text("Noـcustomerـdataـyet.")
                                 .font(.system(size: 13))
                                 .foregroundColor(.gray)
 
-                            Text("Once orders are completed, top customers will appear here.")
+                            Text("Onceـordersـareـcompleted, topـcustomersـwillـappearـhere.")
                                 .font(.system(size: 11))
                                 .foregroundColor(.gray.opacity(0.7))
                         }
