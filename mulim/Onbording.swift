@@ -15,54 +15,74 @@ extension String {
 struct Onbording: View {
     @AppStorage("hasSeenOnboarding") var hasSeenOnboarding: Bool = false
      @State private var goToProducts = false
+    
+    @State private var goToMain = false
+
     var body: some View {
 
         NavigationStack {
-            
-            
             VStack {
                 HStack {
                     Spacer()
-                    NavigationLink(destination: Main(orderManager: OrderManager(), orders: [], products: [])) {
+                    Button(action: {
+                        hasSeenOnboarding = true
+                        goToMain = true
+                    }) {
                         Text("skip_button")
                             .foregroundColor(Color("C1"))
                             .font(.system(size: 18, weight: .bold))
                             .padding()
                     }
+                }
 
-                }
-                
                 TabView {
-                    OnbordingPage(imageName: "OB1", title: "onbording_welcome".localized, description:
-                                    "onboarding_des1".localized
-              )
-                    
-                    OnbordingPage(imageName: "OB2", title: "", description:  "onboarding_des2".localized)
-                    
-                    
+                    OnbordingPage(
+                        imageName: "OB1",
+                        title: "onbording_welcome".localized,
+                        description: "onboarding_des1".localized
+                    )
+
+                    OnbordingPage(
+                        imageName: "OB2",
+                        title: "",
+                        description: "onboarding_des2".localized
+                    )
+
                     VStack {
-                                           OnbordingPage(imageName: "OB3", title: "", description:  "onboarding_des3".localized)
-                                           
-                                           Button(action: {
-                                               hasSeenOnboarding = true
-                                              
-                                           }) {
-                                               Text("get_started")
-                                                   .foregroundColor(.black)
-                                                   .font(.system(size: 18, weight: .bold))
-                                                   .padding()
-                                                   .frame(width: 362, height: 52)
-                                                   .background(Color("C1"))
-                                                   .cornerRadius(25)
-                                           }
-                                       }
-                    
+                        OnbordingPage(
+                            imageName: "OB3",
+                            title: "",
+                            description: "onboarding_des3".localized
+                        )
+
+                        Button(action: {
+                            hasSeenOnboarding = true
+                            goToMain = true
+                        }) {
+                            Text("get_started")
+                                .foregroundColor(.black)
+                                .font(.system(size: 18, weight: .bold))
+                                .padding()
+                                .frame(width: 362, height: 52)
+                                .background(Color("C1"))
+                                .cornerRadius(25)
+                        }
+                    }
                 }
-                
                 .tabViewStyle(PageTabViewStyle())
                 .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
+
+                // هذا هو NavigationLink الفاضي اللي يشتغل بالحالة
+                NavigationLink(
+                    destination: Main(orderManager: OrderManager(), orders: [], products: []),
+                    isActive: $goToMain
+                ) {
+                    EmptyView()
+                }
             }
-        }.navigationBarBackButtonHidden(true)
+        }
+        .navigationBarBackButtonHidden(true)
+.navigationBarBackButtonHidden(true)
 
         
     }
