@@ -43,9 +43,9 @@
 "Order_status"= "حالة الطلب";
 "Order_details" = "تفاصيل الطلب";
 "ProductـType:" = " نوع الطلب";
-"Previous_order" = "الطلبات السابقة";
-"Current_orders" = " الطلبات الحالية";
-"No_orders_yet" = "لا يوجد طلبات حاليًا.";
+"PreviousOrders" = "الطلبات السابقة";
+"CurrentOrders" = "الطلبات الحالية";
+"NoOrdersYet" = "لا يوجد طلبات حاليًا.";
 "Month" = "الشهر";
 "Year" = " السنة";
 "Report" = "التقرير";

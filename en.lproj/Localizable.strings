@@ -42,8 +42,9 @@
 "Order_status" = "Order_status";
 "Order_details" = "Order details";
 "ProductـType:" = "Product Type:";
-"Previous_requests" = "Previous requests";
-"Current_requests" = "Current requests";
+"PreviousOrders" = "Previous Orders";
+"CurrentOrders" = "Current Orders";
+"NoOrdersYet" = "No orders yet.";
 "There_are_no_requests_currently." = "There are no requests currently.";
 "Month" = "Month";
 "Year" = " Year";

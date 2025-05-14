@@ -123,7 +123,7 @@ struct OrdersView: View {
                 // التبويبات
                 HStack {
                     Button(action: { selectedTab = "Current" }) {
-                        Text(NSLocalizedString("Current_orders", comment: ""))
+                        Text(NSLocalizedString("CurrentOrders", comment: ""))
                             .font(.system(size: 18))
                             .foregroundColor(selectedTab == "Current" ? .black : Color(hex: "#A8A8A8"))
                     }
@@ -131,7 +131,7 @@ struct OrdersView: View {
                     Spacer()
 
                     Button(action: { selectedTab = "Previous" }) {
-                        Text(NSLocalizedString("Previous_order", comment: ""))
+                        Text(NSLocalizedString("PreviousOrders", comment: ""))
                             .font(.system(size: 18))
                             .foregroundColor(selectedTab == "Previous" ? .black : Color(hex: "#A8A8A8"))
                     }
@@ -177,7 +177,7 @@ struct OrdersView: View {
                             .scaledToFit()
                             .frame(width: 186, height: 231.01)
 
-                        Text(NSLocalizedString("No_orders_yet", comment: ""))
+                        Text(NSLocalizedString("NoOrdersYet", comment: ""))
                             .foregroundColor(.gray)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
