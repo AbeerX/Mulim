@@ -82,7 +82,7 @@ struct OrdersView: View {
                     }
 
                     Spacer()
-                    Text("Orders")
+                    Text(NSLocalizedString("Orders", comment: ""))
                         .font(.system(size: 22, weight: .regular))
                         .foregroundColor(.black)
                     Spacer()
@@ -91,7 +91,7 @@ struct OrdersView: View {
                 .padding(.horizontal)
 
                 // حقل البحث + زر المايك أو زر الإيقاف
-                TextField("Search", text: $searchText)
+                TextField(NSLocalizedString("Search", comment: ""), text: $searchText)
                     .padding(10)
                     .frame(height: 40)
                     .background(Color(.systemGray6))
@@ -123,7 +123,7 @@ struct OrdersView: View {
                 // التبويبات
                 HStack {
                     Button(action: { selectedTab = "Current" }) {
-                        Text("Current orders")
+                        Text(NSLocalizedString("Current_orders", comment: ""))
                             .font(.system(size: 18))
                             .foregroundColor(selectedTab == "Current" ? .black : Color(hex: "#A8A8A8"))
                     }
@@ -131,7 +131,7 @@ struct OrdersView: View {
                     Spacer()
 
                     Button(action: { selectedTab = "Previous" }) {
-                        Text("Previous orders")
+                        Text(NSLocalizedString("Previous_order", comment: ""))
                             .font(.system(size: 18))
                             .foregroundColor(selectedTab == "Previous" ? .black : Color(hex: "#A8A8A8"))
                     }
@@ -171,9 +171,17 @@ struct OrdersView: View {
                 // عرض الطلبات
                 if filteredOrders.isEmpty {
                     Spacer()
-                    Text("No orders yet.")
-                        .foregroundColor(.gray)
-                        .padding()
+                    VStack(spacing: 16) {
+                        Image("logo")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 186, height: 231.01)
+
+                        Text(NSLocalizedString("No_orders_yet", comment: ""))
+                            .foregroundColor(.gray)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                    }
                     Spacer()
                 } else {
                     ScrollView {
@@ -191,6 +199,7 @@ struct OrdersView: View {
                 Spacer()
             }
             .padding(.top, 24)
+            .navigationBarBackButtonHidden(true)
         }
     }
 
@@ -217,7 +226,7 @@ struct OrdersView: View {
             HStack {
                 Image(systemName: "clock")
                     .font(.system(size: 14))
-                Text("Delivery: \(order.deliveryDate.formatted(date: .abbreviated, time: .omitted))")
+                Text("‏\(NSLocalizedString("Delivery_time:", comment: "")) \(order.deliveryDate.formatted(date: .abbreviated, time: .omitted))")
                     .font(.system(size: 12, weight: .bold))
             }
 
@@ -244,7 +253,7 @@ struct OrdersView: View {
         default: Color(hex: "#00BCD4")
         }
 
-        return Text(status)
+        return Text(NSLocalizedString("status_\(status.lowercased())", comment: ""))
             .font(.system(size: 12))
             .foregroundColor(.black)
             .frame(minWidth: 55)

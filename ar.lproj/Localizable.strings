@@ -17,7 +17,7 @@
 "product_name" = "اسم المنتج";
 "product_price" = "سعر المنتج";
 "empty_list_text" = "قم بإدخال منتجاتك مع الأسعار
-لتسهيل عملية إدارة منتاجتك ومتابعة الدخل ";
+لتسهيل عملية إدارة منتجاتك ومتابعة الدخل ";
 
 
 "Products" = "منتجات";
@@ -94,5 +94,11 @@
 "Ordersـwillـshowـupـonceـreceived." = "ستظهر الطلبات بمجرد استلامها.";
 "Noـcustomerـdataـyet." = "لا توجد بيانات عملاء حتى الآن.";
 "Onceـordersـareـcompleted, topـcustomersـwillـappearـhere." = "بمجرد إكمال الطلبات، سيظهر أفضل العملاء هنا.";
+"Search" = "بحث";
+"select_products" = "اختر المنتجات";
+"enter_customer_name" = "ادخل اسم العميل";
+"enter_customer_phone" = "ادخل رقم العميل";
+"optional_note" = "ملاحظة اختيارية";
+"products_selected" = "تم اختيار %d منتج";
 
 

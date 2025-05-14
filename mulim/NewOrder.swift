@@ -35,19 +35,19 @@ struct NewOrder: View {
         ScrollView {
             VStack(spacing: 15) {
                 RoundedTextFieldWithDot(
-                    title: "Customer name:",
-                    placeholder: "Enter Customer Name",
+                    title: NSLocalizedString("Customer_name:", comment: ""),
+                    placeholder: NSLocalizedString("enter_customer_name", comment: ""),
                     text: $clientName,
                     isEmpty: clientName.isEmpty
                 )
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Customer phone number:")
+                    Text(NSLocalizedString("Customerـphoneـnumber:", comment: ""))
                         .font(.subheadline)
 
                     ZStack(alignment: .topTrailing) {
                         HStack {
-                            TextField("Enter Customer Phone", text: $customerNumber)
+                            TextField(NSLocalizedString("enter_customer_phone", comment: ""), text: $customerNumber)
                                 .font(.subheadline)
                                 .padding(10)
                                 .onChange(of: customerNumber) { newValue in
@@ -80,14 +80,17 @@ struct NewOrder: View {
                 }
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Product:")
+                    Text(NSLocalizedString("prodect:", comment: ""))
                         .font(.subheadline)
 
                     Button(action: {
                         showProductSheet = true
                     }) {
                         HStack {
-                            Text(selectedProducts.isEmpty ? "Select Products" : "\(selectedProducts.count) product(s) selected")
+                            Text(selectedProducts.isEmpty ?
+                                 NSLocalizedString("select_products", comment: "") :
+                                 String(format: NSLocalizedString("products_selected", comment: ""), selectedProducts.count)
+                            )
                                 .foregroundColor(.black)
                             Spacer()
                             Image(systemName: "chevron.down")
@@ -115,23 +118,21 @@ struct NewOrder: View {
                     }
                 }
 
-                RoundedTextField(title: "Note:", text: $note)
+                RoundedTextField(title: NSLocalizedString("Note:", comment: ""), text: $note)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Delivery time:")
+                    Text(NSLocalizedString("Delivery_time:", comment: ""))
                         .font(.subheadline)
                         .padding(.horizontal, 4)
-                    HStack {
-                        Text("Delivery time:")
-                            .font(.subheadline)
-                            .foregroundColor(.black)
 
+                    HStack {
                         DatePicker("", selection: $deliveryDate, displayedComponents: .date)
                             .labelsHidden()
                             .datePickerStyle(.compact)
 
                         Spacer()
                     }
+                    
                     .padding(10)
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
@@ -145,7 +146,7 @@ struct NewOrder: View {
                 )
 
                 HStack {
-                    Text("Total price: \(totalPrice, specifier: "%.2f") SR")
+                    Text("\(NSLocalizedString("Totalـprice", comment: "")) \(totalPrice, specifier: "%.2f") SR")
                     Spacer()
                 }
                 .font(.subheadline)
@@ -158,7 +159,7 @@ struct NewOrder: View {
                 Button(action: {
                     saveOrder()
                 }) {
-                    Text("Done")
+                    Text(NSLocalizedString("done_button", comment: ""))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
@@ -176,7 +177,7 @@ struct NewOrder: View {
         .sheet(isPresented: $showContactPicker) {
             ContactPicker(selectedPhoneNumber: $customerNumber)
         }
-        .navigationTitle("New order")
+        .navigationTitle(NSLocalizedString("Newـorder", comment: ""))
         .navigationBarTitleDisplayMode(.inline)
    
         .toolbar(.hidden, for: .tabBar)
@@ -248,7 +249,7 @@ struct RoundedTextField: View {
             Text(title)
                 .font(.subheadline)
 
-            TextField("Optional note", text: $text)
+            TextField(NSLocalizedString("optional_note", comment: ""), text: $text)
                 .font(.subheadline)
                 .padding(10)
                 .overlay(

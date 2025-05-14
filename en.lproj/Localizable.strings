@@ -90,6 +90,11 @@
 "Ordersـwillـshowـupـonceـreceived." = "Orders will show up once received.";
 "Noـcustomerـdataـyet." = "No customer data yet.";
 "Onceـordersـareـcompleted, topـcustomersـwillـappearـhere." = "Once orders are completed, top customers will appear here.";
-
+"Search" = "Search";
+"select_products" = "Select Products";
+"enter_customer_name" = "Enter Customer Name";
+"enter_customer_phone" = "Enter Customer Phone";
+"optional_note" = "Optional note";
+"products_selected" = "%d product(s) selected";
 
 

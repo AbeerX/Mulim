@@ -16,21 +16,21 @@ struct ProductSelectionSheet: View {
         VStack(spacing: 0) {
             // ✅ رأس الصفحة (العنوان + الأزرار)
             HStack {
-                Button("Cancel") {
+                Button(NSLocalizedString("cancel_button", comment: "")) {
                     dismiss()
                 }
                 .foregroundColor(.blue)
 
                 Spacer()
 
-                Text("Select Products")
+                Text(NSLocalizedString("select_products", comment: ""))
                     .font(.headline)
                     .bold()
 
                 Spacer()
 
-                Button("Done") {
-                    dismiss() // ✅ سيتم تمرير selectedProducts للصفحة الأم
+                Button(NSLocalizedString("done_button", comment: "")) {
+                    dismiss()
                 }
                 .foregroundColor(.blue)
             }
@@ -44,7 +44,26 @@ struct ProductSelectionSheet: View {
                 VStack(spacing: 10) {
                     ForEach(products) { product in
                         VStack(alignment: .leading, spacing: 6) {
-                            HStack {
+                            HStack(spacing: 12) {
+                                // ✅ عرض الصورة إذا موجودة
+                                if let imageData = product.productImage,
+                                   let uiImage = UIImage(data: imageData) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 56, height: 56)
+                                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                                        .clipped()
+                                } else {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(Color.gray.opacity(0.2))
+                                        .frame(width: 56, height: 56)
+                                        .overlay(
+                                            Image(systemName: "photo")
+                                                .foregroundColor(.gray)
+                                        )
+                                }
+
                                 // ✅ عرض اسم المنتج وسعره
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(product.productName)
@@ -63,7 +82,6 @@ struct ProductSelectionSheet: View {
                                     let quantity = selectedProducts[index].quantity
 
                                     HStack(spacing: 8) {
-                                        // زر النقص أو الحذف
                                         Button {
                                             if quantity == 1 {
                                                 selectedProducts.remove(at: index)
@@ -75,11 +93,9 @@ struct ProductSelectionSheet: View {
                                                 .foregroundColor(quantity == 1 ? .gray : .red)
                                         }
 
-                                        // عرض الكمية الحالية
                                         Text("\(quantity)")
                                             .frame(minWidth: 24)
 
-                                        // زر الإضافة
                                         Button {
                                             selectedProducts[index].quantity += 1
                                         } label: {
@@ -88,7 +104,6 @@ struct ProductSelectionSheet: View {
                                         }
                                     }
                                 } else {
-                                    // ✅ زر الإضافة لأول مرة
                                     Button {
                                         selectedProducts.append(SelectedProduct(product: product, quantity: 1))
                                     } label: {
@@ -104,19 +119,7 @@ struct ProductSelectionSheet: View {
                         .padding(.vertical, 8)
                     }
 
-                    // ✅ عرض المجموع الكلي إذا تم اختيار منتجات
-                    if !selectedProducts.isEmpty {
-                        HStack {
-                            Text("Total:")
-                                .font(.subheadline)
-                                .bold()
-                            Spacer()
-                            Text("\(totalPrice, specifier: "%.2f") SR")
-                                .font(.subheadline)
-                                .foregroundColor(.blue)
-                        }
-                        .padding()
-                    }
+        
                 }
             }
         }
