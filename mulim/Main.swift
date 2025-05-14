@@ -380,7 +380,7 @@ struct Main: View {
                                 }
                                 .padding()
                             }
-                           
+                            .presentationDragIndicator(.visible)
                         }
                         
                         

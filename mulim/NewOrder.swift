@@ -42,42 +42,41 @@ struct NewOrder: View {
                 )
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(NSLocalizedString("Customerـphoneـnumber:", comment: ""))
-                        .font(.subheadline)
-
-                    ZStack(alignment: .topTrailing) {
-                        HStack {
-                            TextField(NSLocalizedString("enter_customer_phone", comment: ""), text: $customerNumber)
-                                .font(.subheadline)
-                                .padding(10)
-                                .onChange(of: customerNumber) { newValue in
-                                    // ✅ تعبئة الاسم تلقائيًا عند تطابق الرقم
-                                    if let existingOrder = existingOrders.first(where: { $0.customerNumber == newValue }) {
-                                        clientName = existingOrder.clientName
-                                    }
-                                }
-
-                            Button(action: {
-                                showContactPicker = true
-                            }) {
-                                Image(systemName: "person.crop.circle.badge.plus")
-                                    .foregroundColor(.blue)
-                                    .padding(.trailing, 10)
-                            }
-                        }
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.customBlue, lineWidth: 1)
-                        )
-
+                    HStack(spacing: 2) {
+                        Text(NSLocalizedString("Customerـphoneـnumber:", comment: ""))
+                            .font(.subheadline)
+                        
                         if customerNumber.isEmpty {
-                            Circle()
-                                .fill(Color.red)
-                                .frame(width: 8, height: 8)
-                                .padding(6)
+                            Text("*")
+                                .foregroundColor(.red)
+                                .font(.subheadline.bold())
                         }
                     }
+
+                    HStack {
+                        TextField(NSLocalizedString("enter_customer_phone", comment: ""), text: $customerNumber)
+                            .font(.subheadline)
+                            .padding(10)
+                            .onChange(of: customerNumber) { newValue in
+                                if let existingOrder = existingOrders.first(where: { $0.customerNumber == newValue }) {
+                                    clientName = existingOrder.clientName
+                                }
+                            }
+
+                        Button(action: {
+                            showContactPicker = true
+                        }) {
+                            Image(systemName: "person.crop.circle.badge.plus")
+                                .foregroundColor(.blue)
+                                .padding(.trailing, 10)
+                        }
+                    }
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.customBlue, lineWidth: 1)
+                    )
                 }
+
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(NSLocalizedString("prodect:", comment: ""))
@@ -217,28 +216,28 @@ struct RoundedTextFieldWithDot: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(title)
-                .font(.subheadline)
-
-            ZStack(alignment: .topTrailing) {
-                TextField(placeholder, text: $text)
+            HStack(spacing: 2) {
+                Text(title)
                     .font(.subheadline)
-                    .padding(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.customBlue, lineWidth: 1)
-                    )
-
+                
                 if isEmpty {
-                    Circle()
-                        .fill(Color.red)
-                        .frame(width: 8, height: 8)
-                        .padding(6)
+                    Text("*")
+                        .foregroundColor(.red)
+                        .font(.subheadline)
                 }
             }
+
+            TextField(placeholder, text: $text)
+                .font(.subheadline)
+                .padding(10)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.customBlue, lineWidth: 1)
+                )
         }
     }
 }
+
 
 struct RoundedTextField: View {
     var title: String
