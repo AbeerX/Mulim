@@ -176,11 +176,26 @@ struct NewOrder: View {
         .sheet(isPresented: $showContactPicker) {
             ContactPicker(selectedPhoneNumber: $customerNumber)
         }
+//        .navigationTitle(NSLocalizedString("Newـorder", comment: ""))
+//        .navigationBarTitleDisplayMode(.inline)
+//        .navigationBarBackButtonHidden(true)
+//        .toolbar(.hidden, for: .tabBar)
+//   
+//        .toolbar(.hidden, for: .tabBar)
         .navigationTitle(NSLocalizedString("Newـorder", comment: ""))
-        .navigationBarTitleDisplayMode(.inline)
-   
-        .toolbar(.hidden, for: .tabBar)
-
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarBackButtonHidden(true) // نخفي الزر الأساسي
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            Image(systemName: "chevron.backward")
+                                .foregroundColor(Color("C1"))
+                        }
+                    }
+                }
+                .toolbar(.hidden, for: .tabBar)
     }
 
     func saveOrder() {
