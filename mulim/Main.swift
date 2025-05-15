@@ -190,7 +190,6 @@ struct Main: View {
                             }
 
                             Text("Noـcurrentـordersـyet")
-                                .font(.callout)
                                 .foregroundColor(.gray)
                                 .font(.system(size: 13))
 
