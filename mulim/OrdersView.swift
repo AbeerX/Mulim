@@ -77,23 +77,26 @@ struct OrdersView: View {
                         Image(systemName: "plus.circle")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 32, height: 32)
+                            .frame(width: 30, height: 30)
                             .foregroundColor(Color("C1"))
                     }
 
                     Spacer()
                     Text(NSLocalizedString("Orders", comment: ""))
-                        .font(.system(size: 22, weight: .regular))
+                        .font(.system(size: 18))
                         .foregroundColor(.black)
                     Spacer()
-                    Spacer().frame(width: 44)
+                    Spacer()
+                        .frame(width: 44)
                 }
                 .padding(.horizontal)
-
+                .padding(.top,-20)
                 // حقل البحث + زر المايك أو زر الإيقاف
                 TextField(NSLocalizedString("Search", comment: ""), text: $searchText)
                     .padding(10)
-                    .frame(height: 40)
+                    .frame(height: 36)
+                    .frame(minWidth: 12)
+                
                     .background(Color(.systemGray6))
                     .cornerRadius(10)
                     .overlay(
@@ -124,7 +127,7 @@ struct OrdersView: View {
                 HStack {
                     Button(action: { selectedTab = "Current" }) {
                         Text(NSLocalizedString("CurrentOrders", comment: ""))
-                            .font(.system(size: 18))
+                            .font(.system(size: 17))
                             .foregroundColor(selectedTab == "Current" ? .black : Color(hex: "#A8A8A8"))
                     }
 
@@ -132,7 +135,7 @@ struct OrdersView: View {
 
                     Button(action: { selectedTab = "Previous" }) {
                         Text(NSLocalizedString("PreviousOrders", comment: ""))
-                            .font(.system(size: 18))
+                            .font(.system(size: 17))
                             .foregroundColor(selectedTab == "Previous" ? .black : Color(hex: "#A8A8A8"))
                     }
                 }
