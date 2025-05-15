@@ -363,13 +363,13 @@ struct Main: View {
                                                 UIApplication.shared.open(url)
                                             } label: {
                                                 HStack {
-                                                    Text("whats_button")
+                                                    Text("whats_button").foregroundStyle(Color(.black))
                                                     Image(systemName: "message.fill")
                                                 }
                                                 .frame(maxWidth: .infinity)
                                                 .padding()
                                                 .background(Color("C1"))
-                                                .foregroundColor(.white)
+                                                .foregroundColor(.black)
                                                 .cornerRadius(10)
                                             }
                                             .padding(.top)

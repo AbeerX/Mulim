@@ -7,10 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B713276E2DD5D1B900BE5D57 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B713276C2DD5D1B900BE5D57 /* InfoPlist.strings */; };
 		B7A1A6452DCC9B88009D87D8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B7A1A6432DCC9B88009D87D8 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B713276D2DD5D1B900BE5D57 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B713276F2DD5D1BD00BE5D57 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B7A1A6442DCC9B88009D87D8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B7A1A6462DCC9B8B009D87D8 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
 		EF63D0EB2DC35B2C004B6037 /* mulim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mulim.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -51,6 +54,7 @@
 		EF63D0E22DC35B2C004B6037 = {
 			isa = PBXGroup;
 			children = (
+				B713276C2DD5D1B900BE5D57 /* InfoPlist.strings */,
 				B7A1A6432DCC9B88009D87D8 /* Localizable.strings */,
 				EF63D0ED2DC35B2C004B6037 /* mulim */,
 				EF63D0EC2DC35B2C004B6037 /* Products */,
@@ -130,6 +134,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B713276E2DD5D1B900BE5D57 /* InfoPlist.strings in Resources */,
 				B7A1A6452DCC9B88009D87D8 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -147,6 +152,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		B713276C2DD5D1B900BE5D57 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B713276D2DD5D1B900BE5D57 /* en */,
+				B713276F2DD5D1BD00BE5D57 /* ar */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		B7A1A6432DCC9B88009D87D8 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -286,14 +300,14 @@
 				CODE_SIGN_ENTITLEMENTS = mulim/mulim.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = HC228J29GC;
+				DEVELOPMENT_TEAM = 7V6D5R973T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = mulim/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Mulim;
 				INFOPLIST_KEY_NSContactsUsageDescription = "نحتاج الوصول لجهات الاتصال لإختيار رقم الجوال";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "نحتاج الوصول الى الميكرفون";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "نحتاج الوصول الى الميكرفون";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "$(NSLocalizedMicrophoneUsageDescription)";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "$(NSLocalizedSpeechRecognitionUsageDescription)";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -325,14 +339,14 @@
 				CODE_SIGN_ENTITLEMENTS = mulim/mulim.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = HC228J29GC;
+				DEVELOPMENT_TEAM = 7V6D5R973T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = mulim/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Mulim;
 				INFOPLIST_KEY_NSContactsUsageDescription = "نحتاج الوصول لجهات الاتصال لإختيار رقم الجوال";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "نحتاج الوصول الى الميكرفون";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "نحتاج الوصول الى الميكرفون";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "$(NSLocalizedMicrophoneUsageDescription)";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "$(NSLocalizedSpeechRecognitionUsageDescription)";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
