@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  mulim
+
+  Created by Noura Alrowais on 17/11/1446 AH.
+  
+*/
+NSMicrophoneUsageDescription = "We need access to the microphone to record your voice";
+NSSpeechRecognitionUsageDescription = "We need access to speech recognition to convert your speech to text";

@@ -1,5 +1,9 @@
 import SwiftUI
 import SwiftData
+struct OrderStatus {
+    let rawValue: String  // القيمة الحقيقية للتخزين مثل: "Closed"
+    let label: String     // النص المعروض على الزر مثل: "مغلق"
+}
 
 struct OrderDetailsView: View {
     @Bindable var order: Order
@@ -150,13 +154,20 @@ struct OrderDetailsView: View {
 
                             HStack {
                                 Text(LocalizedStringKey("Order_status:"))
-                                 .font(.system(size: 18))
-                                statusButton(title: NSLocalizedString("Canceled", comment: ""), color: .yellow)
-                                        statusButton(title: NSLocalizedString("Open", comment: ""), color: .blue)
-                                        statusButton(title: NSLocalizedString("Closed", comment: ""), color: .red)
-//                                statusButton(title: "Canceled", color: .yellow)
-//                                statusButton(title: "Open", color: .blue)
-//                                statusButton(title: "Closed", color: .red)
+                                    .font(.system(size: 18))
+
+                                statusButton(
+                                    status: OrderStatus(rawValue: "Canceled", label: NSLocalizedString("Canceled", comment: "")),
+                                    color: .yellow
+                                )
+                                statusButton(
+                                    status: OrderStatus(rawValue: "Open", label: NSLocalizedString("Open", comment: "")),
+                                    color: .blue
+                                )
+                                statusButton(
+                                    status: OrderStatus(rawValue: "Closed", label: NSLocalizedString("Closed", comment: "")),
+                                    color: .red
+                                )
                             }
                             .padding(.top, 16)
                             .padding(.leading, 13)
@@ -324,15 +335,15 @@ struct OrderDetailsView: View {
         .padding(.vertical, 12)
     }
 
-    private func statusButton(title: String, color: Color) -> some View {
-        Text(title)
-            .font(.system(size: 12, weight: order.selectedStatus == title ? .bold : .regular))
+    private func statusButton(status: OrderStatus, color: Color) -> some View {
+        Text(status.label)
+            .font(.system(size: 12, weight: order.selectedStatus == status.rawValue ? .bold : .regular))
             .foregroundColor(.black)
             .padding(.horizontal, 13)
             .padding(.vertical, 6)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(order.selectedStatus == title ? color.opacity(0.2) : Color.clear)
+                    .fill(order.selectedStatus == status.rawValue ? color.opacity(0.2) : Color.clear)
                     .overlay(
                         RoundedRectangle(cornerRadius: 20)
                             .stroke(color, lineWidth: 1.5)
@@ -340,7 +351,7 @@ struct OrderDetailsView: View {
             )
             .onTapGesture {
                 if isEditing {
-                    order.selectedStatus = title
+                    order.selectedStatus = status.rawValue // 👈 الحفظ يكون على "Closed"
                 }
             }
     }

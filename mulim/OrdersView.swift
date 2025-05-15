@@ -120,7 +120,7 @@ struct OrdersView: View {
                     )
                     .padding(.horizontal)
 
-                // التبويبات
+                // ✅ التبويبات مع الحفاظ على selectedTab بقيم ثابتة
                 HStack {
                     Button(action: { selectedTab = "Current" }) {
                         Text(NSLocalizedString("CurrentOrders", comment: ""))
@@ -149,16 +149,14 @@ struct OrdersView: View {
                     speechRecognizer.requestPermission()
                 }
 
-                // تصفية الطلبات
                 let filteredOrders = orders.filter { order in
-                    let rawStatus = order.selectedStatus.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let status = order.selectedStatus.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                    
                     let matchesTab: Bool
-
                     if selectedTab == "Current" {
-                        matchesTab = rawStatus.compare("Open", options: .caseInsensitive) == .orderedSame
+                        matchesTab = status == "open"
                     } else {
-                        matchesTab = rawStatus.compare("Closed", options: .caseInsensitive) == .orderedSame ||
-                                     rawStatus.compare("Canceled", options: .caseInsensitive) == .orderedSame
+                        matchesTab = status == "closed" || status == "canceled"
                     }
 
                     let matchesSearch = searchText.isEmpty ||
