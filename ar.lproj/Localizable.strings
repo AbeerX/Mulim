@@ -19,7 +19,7 @@
 "empty_list_text" = "قم بإدخال منتجاتك مع الأسعار
 لتسهيل عملية إدارة منتجاتك ومتابعة الدخل ";
 
-
+"You_have_not_entered_your_products_yet" ="لم تقم بإدخال منتجاتك بعد";
 "Products" = "منتجات";
 "Products:" = "المنتجات:";
 "Add_New_Product" = "اضف منتج جديد";

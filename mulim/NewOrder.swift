@@ -115,6 +115,8 @@ struct NewOrder: View {
                             selectedProducts: $selectedProducts
                         )
                     }
+                    .presentationDetents([.medium]) // ✅ نفس مقاس ProductFormSheet
+                        .presentationBackground(Color.white) // ✅ لون خلفية أبيض
                 }
 
                 RoundedTextField(title: NSLocalizedString("Note:", comment: ""), text: $note)

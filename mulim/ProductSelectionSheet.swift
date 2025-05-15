@@ -6,6 +6,7 @@ struct ProductSelectionSheet: View {
     @Binding var selectedProducts: [SelectedProduct]
 
     @Environment(\.dismiss) var dismiss
+    @State private var didLoad = false
 
     // ✅ حساب السعر الإجمالي
     var totalPrice: Double {
@@ -19,7 +20,7 @@ struct ProductSelectionSheet: View {
                 Button(NSLocalizedString("cancel_button", comment: "")) {
                     dismiss()
                 }
-                .foregroundColor(.blue)
+                .foregroundColor(.gray)
 
                 Spacer()
 
@@ -35,13 +36,43 @@ struct ProductSelectionSheet: View {
                 .foregroundColor(.blue)
             }
             .padding()
-            .background(Color(UIColor.systemGray6))
+//            .background(Color(UIColor.systemGray6))
 
             Divider()
 
             // ✅ قائمة المنتجات
             ScrollView {
                 VStack(spacing: 10) {
+
+                    if (products.isEmpty || (selectedProducts.isEmpty && originalOrder == nil)) && didLoad {
+                        VStack(spacing: 12) {
+
+                        ZStack {
+                            Circle()
+                                .fill(Color("C2").opacity(0.1))
+                                .frame(width: 88, height: 88)
+//                                .fill(Color("C1"))
+//                                .frame(width: 88, height: 88)
+//                                .opacity(0.1)
+                            Image(systemName: "menucard.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 36, height: 36)
+                                .foregroundColor(Color("C2"))
+//                                .font(.system(size: 36))
+//                                .foregroundColor(Color("C1"))
+                        }
+                                Text("You_have_not_entered_your_products_yet")
+                                .font(.system(size: 13))
+                                .foregroundColor(.gray)
+                        
+                        
+                                            }
+                                .padding(.top, 40)
+                                 .frame(maxWidth: .infinity)
+
+                                        }
+                    
                     ForEach(products) { product in
                         VStack(alignment: .leading, spacing: 6) {
                             HStack(spacing: 12) {
@@ -128,7 +159,9 @@ struct ProductSelectionSheet: View {
 
         // ✅ تحميل المنتجات من الطلب الحالي عند الفتح
         .onAppear {
-            guard let order = originalOrder else { return }
+            guard let order = originalOrder else {
+                didLoad = true // ✅ حتى لو ما فيه أوردر، ننهي التحميل
+return }
 
             selectedProducts = order.orderedProducts.compactMap { item in
                 if let matchedProduct = products.first(where: { $0.productName == item.name }) {
@@ -136,6 +169,9 @@ struct ProductSelectionSheet: View {
                 }
                 return nil
             }
+            didLoad = true // ✅ بعد التحميل نسمح بإظهار رسالة "لا يوجد منتجات"
+
         }
     }
+   
 }
