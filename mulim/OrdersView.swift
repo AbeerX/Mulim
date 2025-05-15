@@ -127,7 +127,7 @@ struct OrdersView: View {
                 HStack {
                     Button(action: { selectedTab = "Current" }) {
                         Text(NSLocalizedString("CurrentOrders", comment: ""))
-                            .font(.system(size: 17))
+                            .font(.system(size: 15))
                             .foregroundColor(selectedTab == "Current" ? .black : Color(hex: "#A8A8A8"))
                     }
 
@@ -135,7 +135,7 @@ struct OrdersView: View {
 
                     Button(action: { selectedTab = "Previous" }) {
                         Text(NSLocalizedString("PreviousOrders", comment: ""))
-                            .font(.system(size: 17))
+                            .font(.system(size: 15))
                             .foregroundColor(selectedTab == "Previous" ? .black : Color(hex: "#A8A8A8"))
                     }
                 }
