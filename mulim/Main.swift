@@ -162,7 +162,7 @@ struct Main: View {
                         .padding(.bottom, 16)
                     
                     HStack {
-                        Text("CurrentـOrders")
+                        Text("CurrentOrders")
                             .fontWeight(.bold)
                             .font(.system(size: 12))
                         
@@ -192,10 +192,12 @@ struct Main: View {
                             Text("Noـcurrentـordersـyet")
                                 .font(.callout)
                                 .foregroundColor(.gray)
+                                .font(.system(size: 13))
 
                             Text("Ordersـwillـshowـupـonceـreceived.")
                                 .font(.caption)
                                 .foregroundColor(.gray.opacity(0.6))
+                                .font(.system(size: 11))
                         }
                         .frame(maxWidth: .infinity, minHeight: 180)
 
@@ -274,9 +276,15 @@ struct Main: View {
                                                 .aspectRatio(contentMode: .fit)
                                                 .frame(width: 62, height: 65)
                                                 .foregroundColor(Color("C2"))
-                                            Text(customer.name)
-                                                .font(.system(size: 13)).foregroundStyle(Color.black).bold()
                                             
+                                            Text(customer.name)
+                                                .font(.system(size: 13))
+                                                .foregroundStyle(Color.black)
+                                                .bold()
+                                                .lineLimit(1)
+                                                .truncationMode(.tail)
+                                                .frame(width: 70) // ✅ أو أي رقم يناسب حجم البطاقة بدون ما يكسر التصميم
+
                                         }
                                         .padding(.trailing, 14)
                                     }
@@ -448,6 +456,7 @@ struct OrderCard: View {
     }
 }
 
+
 struct StatCard: View {
     var title: String
     var value: String
@@ -497,13 +506,17 @@ func row(icon: String, text: String) -> some View {
     HStack(spacing: 6) {
         Image(systemName: icon)
             .frame(width: 16, alignment: .leading)
+
         Text(text)
             .font(.system(size: 10))
             .fontWeight(.bold)
             .lineLimit(1)
             .truncationMode(.tail)
+            .frame(width: 110, alignment: .leading) // ✅ عرض محدد ومناسب
+            .environment(\.layoutDirection, .leftToRight) // ✅ يعالج خلط الاتجاه
     }
 }
+
 
 func deliveryLabel(for date: Date) -> String {
     let calendar = Calendar.current
